@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" width="200" height="50">
+  <!-- Green ribbon shape -->
+  <path d="M0 0 H170 L200 25 L170 50 H0 Z" fill="#28a745" />
+
+  <!-- White "Best Seller" text -->
+  <text
+    x="85"
+    y="30"
+    font-family="Poppins, sans-serif"
+    font-size="16"
+    font-weight="600"
+    fill="#ffffff"
+    text-anchor="middle"
+    dominant-baseline="middle"
+  >
+    Best Seller
+  </text>
+</svg>

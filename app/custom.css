@@ -1,0 +1,89 @@
+/* Custom scrollbar styles */
+/* ::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #4a5568;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #e2e8f0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #2d3748;
+} */
+
+.myimg {
+  mix-blend-mode: darken;
+}
+
+.mygrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.myproductsgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.myslideheight {
+  height: calc(100% - 154px);
+}
+
+.sepratorw {
+  width: calc(100% - 64px);
+}
+
+.custom-shape::before,
+.custom-shape::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 50%;
+  height: 50px;
+  background-color: white;
+}
+
+.inward-curve-shape {
+  position: relative;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 75% 100%, 25% 100%, 0 80%);
+}
+
+/* Left round curve */
+.custom-shape::before {
+  left: -10px;
+  border-top-left-radius: 100% 100%;
+}
+
+/* Right round curve */
+.custom-shape::after {
+  right: 0;
+  border-top-right-radius: 100% 100%;
+}
+
+.rotate {
+  transform: rotate(90deg);
+}
+
+.rotate2 {
+  transform: rotate(270deg);
+}
+
+.mysectionGrid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.mygridadmin{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
