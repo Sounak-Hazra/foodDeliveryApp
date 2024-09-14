@@ -10,7 +10,7 @@ const Page = () => {
     const [password, setPassword] = useState('');
     const [orders, setOrders] = useState([]);
 
-    const {toast} = useToast();
+    const { toast } = useToast();
 
     const handleLogin = async (e) => {
         try {
@@ -41,6 +41,37 @@ const Page = () => {
         }
     };
 
+    const orderCancled = async (order) => {
+        try {
+            const res = await fetch('/api/ordercnaclebydeleveryboy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({username: phoneNumber,  id: order._id }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast({
+                    title: 'Order Cancled',
+                    message: data.message,
+                    type: 'success',
+                });
+            }
+            else {
+                toast({
+                    title: 'Error',
+                    message: data.message,
+                    type: 'error',
+                });
+            }
+
+        } catch (error) {
+            console.log(error); // Debugging: Log any errors
+            alert('Something went wrong');
+        }
+    }
+
     const orderdelivered = async (order) => {
         try {
             const res = await fetch('/api/orderdone', {
@@ -65,7 +96,7 @@ const Page = () => {
                     type: 'error',
                 });
             }
-            
+
         } catch (error) {
             console.log(error); // Debugging: Log any errors
             alert('Something went wrong');
@@ -138,7 +169,8 @@ const Page = () => {
                             <p><strong>Payment type:</strong> {order.paymentType}</p>
                             <p><strong>Price:</strong> {order.price}</p>
                             <p><strong>Status:</strong> {order.successfull}</p>
-                            <Button onClick = {()=>orderdelivered(order)}>Delivered</Button>
+                            <Button onClick={() => orderdelivered(order)}>Delivered</Button>
+                            <Button onClick={() => orderCancled(order)}>Cancle order</Button>
                             {/* Display Items */}
                             <div className="mt-4 h-32 overflow-y-auto">
                                 <h3 className="font-semibold text-lg">Items:</h3>

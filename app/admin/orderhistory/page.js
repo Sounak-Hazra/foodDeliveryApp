@@ -12,6 +12,8 @@ const page = () => {
     const [iscancled, setiscancled] = useState(false)
     const [deliveryboys, setdeliveryboys] = useState([])
     const [selectedDeliveryBoy, setSelectedDeliveryBoy] = useState('');
+    const [deleveryboy, setdeleveryboy] = useState("all")
+    const [totalsale, settotalsale] = useState(0)
 
 
 
@@ -121,13 +123,13 @@ const page = () => {
                 console.log(data.message)
             }
 
-            
+
         } catch (error) {
-            
+
         }
         console.log(event.target.value);
         console.log(order);
-      };
+    };
 
     // Correct usage of useEffect
     useEffect(() => {
@@ -147,6 +149,33 @@ const page = () => {
         console.log(d)
         setorderstate(d)
     }
+
+    const calculateTotalSale = () => {
+
+        let saleTotal = 0; // Temporary variable to hold the total
+        console.log(deleveryboy);
+        console.log(orders);
+        if (deleveryboy === "all") {
+            orders.map((order) => {
+                console.log(order.price);
+                saleTotal += order.price;
+            });
+        } else {
+            orders.forEach((order) => {
+                if (order.deleveryboy === deleveryboy) {
+                    console.log(order.price);
+                    saleTotal += order.price;
+                }
+            });
+        }
+
+        settotalsale(saleTotal); // Update state with the final total
+        console.log(saleTotal);
+    };
+
+    useEffect(() => {
+        calculateTotalSale();
+    }, [orderstate, deleveryboy, orders]);
 
     const accapet = async (order) => {
         try {
@@ -201,63 +230,211 @@ const page = () => {
                             <option value="placed">Placed</option>
                             <option value="accapted">Accapted</option>
                             <option value="assigned">Assigned order</option>
-                            <option value="cancled">Cancle order</option>
+                            <option value="cancled">Cancled order</option>
                             <option value="successfull">Successfull</option>
                         </select>
                     </div>
                 </nav>
 
+                {
+                    orderstate === "successfull" &&
+                    <section className="p-6 flex w-full gap-2">
+                        <h2 className="text-xl font-semibold">Total Sale: ${totalsale}</h2>
+                        <select
+                            onChange={(e) => setdeleveryboy(e.target.value)}
+                            className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
+                        >
+                            <option value="" disabled>
+                                --Select--
+                            </option>
+                            <option key={"all"} value={"all"}>
+                                All
+                            </option>
+                            {deliveryboys.map((boy) => (
+                                <option key={boy.id} value={boy.name}>
+                                    {boy.username}
+                                </option>
+                            ))}
+                        </select>
+                    </section>
+                }
+                {
+                    orderstate === "cancled" &&
+                    <section className="p-6 flex w-full gap-2">
+                        <h2 className="text-xl font-semibold">Delevery Boy :</h2>
+                        <select
+                            onChange={(e) => setdeleveryboy(e.target.value)}
+                            className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
+                        >
+                            <option value="" disabled>
+                                --Select--
+                            </option>
+                            <option key={"all"} value={"all"}>
+                                All
+                            </option>
+                            {deliveryboys.map((boy) => (
+                                <option key={boy.id} value={boy.name}>
+                                    {boy.username}
+                                </option>
+                            ))}
+                        </select>
+                    </section>
+                }
+
                 {/* Card Section */}
                 <section className="p-6 mysectionGrid">
                     {orders.map((order, index) => (
-                        <div key={index} className="card bg-white shadow-md rounded-lg p-4">
-                            <h2 className="text-xl font-semibold mb-2">Name: {order.name}</h2>
-                            <h2 className="text-xl font-semibold mb-2">ID: {order._id}</h2>
-                            <p><strong>Full address:</strong> {order.address}</p>
-                            <p><strong>City:</strong> {order.city}</p>
-                            <p><strong>Landmark:</strong> {order.landmark}</p>
-                            <p><strong>Mobile number:</strong> {order.mobile}</p>
-                            <p><strong>Payment type:</strong> {order.paymentType}</p>
-                            <p><strong>Price:</strong> {order.price}</p>
-                            <p><strong>Status:</strong> {order.successfull}</p>
-                            {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
-                            {order.successfull === "accapted" &&
-                                <div  className="flex flex-col items-start p-4 space-y-4">
-                                    <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
-                                    <select
-                                        onChange={(e)=>handleSelectChange(e,order)}
-                                        className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
-                                    >
-                                        <option value="" disabled>
-                                            --Select--
-                                        </option>
-                                        {deliveryboys.map((boy) => (
-                                            <option key={boy.id} value={boy.name}>
-                                                {boy.username}
-                                            </option>
-                                        ))}
-                                    </select>
+                        (!orderstate == "successfull" || deleveryboy === "all") ?
+                            (!orderstate == "cancled" || deleveryboy === "all") ?
+                                <div key={index} className="card bg-white shadow-md rounded-lg p-4">
+                                    <h2 className="text-xl font-semibold mb-2">Name: {order.name}</h2>
+                                    <h2 className="text-xl font-semibold mb-2">ID: {order._id}</h2>
+                                    <p><strong>Full address:</strong> {order.address}</p>
+                                    <p><strong>City:</strong> {order.city}</p>
+                                    <p><strong>Landmark:</strong> {order.landmark}</p>
+                                    <p><strong>Mobile number:</strong> {order.mobile}</p>
+                                    <p><strong>Payment type:</strong> {order.paymentType}</p>
+                                    <p><strong>Price:</strong> {order.price}</p>
+                                    <p><strong>Status:</strong> {order.successfull}</p>
+                                    {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
+                                    {order.successfull === "accapted" &&
+                                        <div className="flex flex-col items-start p-4 space-y-4">
+                                            <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
+                                            <select
+                                                onChange={(e) => handleSelectChange(e, order)}
+                                                className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
+                                            >
+                                                <option value="" disabled>
+                                                    --Select--
+                                                </option>
+                                                {deliveryboys.map((boy) => (
+                                                    <option key={boy.id} value={boy.name}>
+                                                        {boy.username}
+                                                    </option>
+                                                ))}
+                                            </select>
 
-                                    {selectedDeliveryBoy && (
-                                        <p className="mt-2 text-blue-600 font-medium">
-                                            Selected Delivery Boy: {selectedDeliveryBoy}
-                                        </p>
-                                    )}
+                                            {selectedDeliveryBoy && (
+                                                <p className="mt-2 text-blue-600 font-medium">
+                                                    Selected Delivery Boy: {selectedDeliveryBoy}
+                                                </p>
+                                            )}
+                                        </div>}
+                                    {order.successfull === "created" || order.successfull === "placed" && <Button className='text-black' onClick={() => { cancleorder(order) }}>Cancle order</Button>}
+                                    {order.successfull === "assigned" && <p><strong>Delevery By</strong> {order.deleveryboy}</p>}
+                                    {/* Display Items */}
+                                    <div className="mt-4 h-32 overflow-y-auto">
+                                        <h3 className="font-semibold text-lg">Items:</h3>
+                                        <ul className="list-disc pl-5">
+                                            {order.product.map((item, i) => (
+                                                <li key={i} className="mt-2">
+                                                    <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ${item.price}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div> :
+                                <>
+                                    {order.deleveryboy == deleveryboy && <div key={index} className="card bg-white shadow-md rounded-lg p-4">
+                                        <h2 className="text-xl font-semibold mb-2">Name: {order.name}</h2>
+                                        <h2 className="text-xl font-semibold mb-2">ID: {order._id}</h2>
+                                        <p><strong>Full address:</strong> {order.address}</p>
+                                        <p><strong>City:</strong> {order.city}</p>
+                                        <p><strong>Landmark:</strong> {order.landmark}</p>
+                                        <p><strong>Mobile number:</strong> {order.mobile}</p>
+                                        <p><strong>Payment type:</strong> {order.paymentType}</p>
+                                        <p><strong>Price:</strong> {order.price}</p>
+                                        <p><strong>Status:</strong> {order.successfull}</p>
+                                        {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
+                                        {order.successfull === "accapted" &&
+                                            <div className="flex flex-col items-start p-4 space-y-4">
+                                                <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
+                                                <select
+                                                    onChange={(e) => handleSelectChange(e, order)}
+                                                    className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
+                                                >
+                                                    <option value="" disabled>
+                                                        --Select--
+                                                    </option>
+                                                    {deliveryboys.map((boy) => (
+                                                        <option key={boy.id} value={boy.name}>
+                                                            {boy.username}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                                {selectedDeliveryBoy && (
+                                                    <p className="mt-2 text-blue-600 font-medium">
+                                                        Selected Delivery Boy: {selectedDeliveryBoy}
+                                                    </p>
+                                                )}
+                                            </div>}
+                                        {order.successfull === "created" || order.successfull === "placed" && <Button className='text-black' onClick={() => { cancleorder(order) }}>Cancle order</Button>}
+                                        {order.successfull === "assigned" && <p><strong>Delevery By</strong> {order.deleveryboy}</p>}
+                                        {/* Display Items */}
+                                        <div className="mt-4 h-32 overflow-y-auto">
+                                            <h3 className="font-semibold text-lg">Items:</h3>
+                                            <ul className="list-disc pl-5">
+                                                {order.product.map((item, i) => (
+                                                    <li key={i} className="mt-2">
+                                                        <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ${item.price}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>}
+                                </>
+                            :
+                            <>
+                                {order.deleveryboy == deleveryboy && <div key={index} className="card bg-white shadow-md rounded-lg p-4">
+                                    <h2 className="text-xl font-semibold mb-2">Name: {order.name}</h2>
+                                    <h2 className="text-xl font-semibold mb-2">ID: {order._id}</h2>
+                                    <p><strong>Full address:</strong> {order.address}</p>
+                                    <p><strong>City:</strong> {order.city}</p>
+                                    <p><strong>Landmark:</strong> {order.landmark}</p>
+                                    <p><strong>Mobile number:</strong> {order.mobile}</p>
+                                    <p><strong>Payment type:</strong> {order.paymentType}</p>
+                                    <p><strong>Price:</strong> {order.price}</p>
+                                    <p><strong>Status:</strong> {order.successfull}</p>
+                                    {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
+                                    {order.successfull === "accapted" &&
+                                        <div className="flex flex-col items-start p-4 space-y-4">
+                                            <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
+                                            <select
+                                                onChange={(e) => handleSelectChange(e, order)}
+                                                className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
+                                            >
+                                                <option value="" disabled>
+                                                    --Select--
+                                                </option>
+                                                {deliveryboys.map((boy) => (
+                                                    <option key={boy.id} value={boy.name}>
+                                                        {boy.username}
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                            {selectedDeliveryBoy && (
+                                                <p className="mt-2 text-blue-600 font-medium">
+                                                    Selected Delivery Boy: {selectedDeliveryBoy}
+                                                </p>
+                                            )}
+                                        </div>}
+                                    {order.successfull === "created" || order.successfull === "placed" && <Button className='text-black' onClick={() => { cancleorder(order) }}>Cancle order</Button>}
+                                    {order.successfull === "assigned" && <p><strong>Delevery By</strong> {order.deleveryboy}</p>}
+                                    {/* Display Items */}
+                                    <div className="mt-4 h-32 overflow-y-auto">
+                                        <h3 className="font-semibold text-lg">Items:</h3>
+                                        <ul className="list-disc pl-5">
+                                            {order.product.map((item, i) => (
+                                                <li key={i} className="mt-2">
+                                                    <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ${item.price}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 </div>}
-                            {order.successfull === "created" || order.successfull === "placed"   && <Button className='text-black' onClick={() => { cancleorder(order) }}>Cancle order</Button>}
-                            {order.successfull === "assigned" && <p><strong>Delevery By</strong> {order.deleveryboy}</p> }
-                            {/* Display Items */}
-                            <div className="mt-4 h-32 overflow-y-auto">
-                                <h3 className="font-semibold text-lg">Items:</h3>
-                                <ul className="list-disc pl-5">
-                                    {order.product.map((item, i) => (
-                                        <li key={i} className="mt-2">
-                                            <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ${item.price}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
+                            </>
                     ))}
                 </section>
             </div>
