@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/card"
 import { date } from "zod";
 import { Loader2 } from "lucide-react";
+import { Modal } from "flowbite-react";
 
 
 
@@ -44,32 +45,95 @@ export default function Home() {
   const [currentcategory, setcurrentcategory] = useState("all")
   const [issubmitting, setissubmitting] = useState(false)
 
-  const productRefs = useRef({}); 
+  //gpt
+  const [showModal, setShowModal] = useState(false);
+  const [pincode, setPincode] = useState('');
+  const [error, setError] = useState(null);
+  const availablePincodes = ['110001', '110002', '110003', '110004']; // Example data, replace with actual API call if needed
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowModal(true);
+    }, 4000); // 4-second delay
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
+  const handlePincodeSubmit = async () => {
+    const loaderToastId = toast({
+      title: (
+        <div className="flex items-center">
+          <Loader2
+            size={24}
+            color="#000000"
+            className="mr-2 animate-spin"
+          />
+          Checking Avilablity in your location
+        </div>
+      ),
+      description: "Please wait...",
+      className: "bg-white text-black",
+      duration: null,
+    });
+    if (pincode.length !== 6 || isNaN(pincode)) {
+      setError('Pincode must be a 6-digit number');
+      return;
+    }
+
+    const res = await fetch(`/api/checkpincode`, {
+      method: 'POST',
+      body: JSON.stringify({ pincode }),
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      toast({
+        title: "Success",
+        description: "Service is available in your location",
+        variant: "success",
+        className: "bg-white text-black",
+      });
+      setShowModal(false);
+      setError(null);
+    }
+    else {
+      toast({
+        title: "Error",
+        description: "We are not available in your location",
+        variant: "destructive",
+        className: "bg-white text-black",
+      });
+    
+      setError('Service is not available in your location.');
+    }
+  };
+  
+  //end gpt
+
+  const productRefs = useRef({});
 
   const { toast } = useToast();
   const router = useRouter();
 
 
   const handlepayment = async () => {
-  
+
     try {
-      
+
       const loaderToastId = toast({
         title: (
           <div className="flex items-center">
-            <Loader2 
-              size={24} 
-              color="#000000" 
-              className="mr-2 animate-spin" 
+            <Loader2
+              size={24}
+              color="#000000"
+              className="mr-2 animate-spin"
             />
             Processing Payment
           </div>
         ),
         description: "Please wait...",
-        className: "bg-white text-black", 
-        duration: null, 
+        className: "bg-white text-black",
+        duration: null,
       });
-  
+
       setissubmitting(true);
       const data = await fetch("/api/makeorder", {
         method: "POST",
@@ -79,21 +143,21 @@ export default function Home() {
         }),
       });
       const response = await data.json();
-  
+
       if (!response.success) {
         toast({
           title: "Error",
           description: response.message,
           variant: "destructive",
-          className: "bg-white text-black", 
+          className: "bg-white text-black",
         });
       } else {
-        
+
         toast({
           title: "Order Successful",
           description: "Redirecting to order details...",
           variant: "success",
-          className: "bg-white text-black", 
+          className: "bg-white text-black",
         });
         router.push("/orderdetails/" + response.data);
       }
@@ -103,13 +167,13 @@ export default function Home() {
         title: "Network Error",
         description: "Please try again later.",
         variant: "destructive",
-        className: "bg-white text-black", 
+        className: "bg-white text-black",
       });
     } finally {
       setissubmitting(false);
     }
   };
-  
+
 
 
 
@@ -256,6 +320,34 @@ export default function Home() {
   return (
     <>
       <Nav />
+      {/* chat gpt */}
+      <div >
+
+        {/* Modal Popup */}
+        {showModal && (
+           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+           <div className="bg-white rounded-lg p-8 w-full max-w-md mx-auto">
+             <h2 className="text-xl font-bold mb-4">Enter Your Pincode for checking avilablity in your location</h2>
+             <input
+               type="text"
+               value={pincode}
+               onChange={(e) => setPincode(e.target.value)}
+               placeholder="Enter 6-digit pincode"
+               maxLength="6"
+               className="border border-gray-300 p-2 rounded-md w-full mb-4"
+             />
+             {error && <p className="text-red-500">{error}</p>}
+             <button
+               onClick={handlePincodeSubmit}
+               className="bg-green-600 text-white font-bold p-2 rounded-md w-full"
+             >
+               Submit Pincode
+             </button>
+           </div>
+         </div>
+        )}
+      </div>
+      {/* chat gpt */}
       {/* <div className="mainitemslogo h-fit p-4 text-3xl mt-4 font-bold text-center">
         <span className="text-green-800">Eat {" "}</span>
         <span className="w-24 inline-block text-start">
@@ -290,7 +382,7 @@ export default function Home() {
           </CarouselContent>
         </Carousel>
       </div> */}
-      <div className="bg-green-700 h-[8.50rem] relative top-[-93px] pt-6 pb-6 mt-8 mb-2 rounded-t-[35px] ">
+      <div className={`bg-green-700 h-[8.50rem] relative top-[-93px] pt-6 pb-6 mt-8 mb-2 rounded-t-[35px] ${showModal && "blureffect" }`}>
         <div className="flex justify-around overflow-x-auto overflow-y-hidden scrollbar-hide">
           <div onClick={() => { handlechangecat({ name: "all" }) }} className={`flex z-10 flex-col w-[100px] mx-3 p-3  relative  rounded-[3rem] pb-5 ml-4  items-center justify-center ransition-all duration-[2000s] ease-out ${currentcategory === "all" ? "rounded-b-none bg-white " : ""}  `}>
             <div className="bg-yellow-400 w-[60px] h-[74px] flex justify-center items-center rounded-[60px]">
@@ -337,9 +429,9 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className="mainitems min-h-screen relative top-[-104px] px-9 py-5">
+      <div className={`mainitems min-h-screen relative top-[-104px] px-9 py-5 ${showModal && "blureffect" }`}>
         {totalProducts.map((product) => (
-          <div 
+          <div
             className="h-auto "
           >
             {currentcategory === "all" ?
@@ -535,20 +627,6 @@ export default function Home() {
                   </div>
                   <Separator className="w-full bg-green-200/50" />
                 </>
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-
-                
               ))}
           </div>
 

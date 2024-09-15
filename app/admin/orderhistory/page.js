@@ -242,7 +242,7 @@ const page = () => {
                 {
                     orderstate === "successfull" &&
                     <section className="p-6 flex w-full gap-2">
-                        <h2 className="text-xl font-semibold">Total Sale: ${totalsale}</h2>
+                        <h2 className="text-xl font-semibold">Total Sale: ₹{totalsale}</h2>
                         <select
                             onChange={(e) => setdeleveryboy(e.target.value)}
                             className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
@@ -348,7 +348,7 @@ const page = () => {
                                         <ul className="list-disc pl-5">
                                             {order.product.map((item, i) => (
                                                 <li key={i} className="mt-2">
-                                                    <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ${item.price}
+                                                    <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
                                                 </li>
                                             ))}
                                         </ul>
@@ -396,7 +396,7 @@ const page = () => {
                                             <ul className="list-disc pl-5">
                                                 {order.product.map((item, i) => (
                                                     <li key={i} className="mt-2">
-                                                        <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ${item.price}
+                                                        <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
                                                     </li>
                                                 ))}
                                             </ul>
@@ -459,7 +459,7 @@ const page = () => {
                                         <ul className="list-disc pl-5">
                                             {order.product.map((item, i) => (
                                                 <li key={i} className="mt-2">
-                                                    <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ${item.price}
+                                                    <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
                                                 </li>
                                             ))}
                                         </ul>

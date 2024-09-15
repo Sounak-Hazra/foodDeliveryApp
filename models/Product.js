@@ -1,5 +1,6 @@
 import e from 'express';
 import mongoose from 'mongoose';
+import { pincodeSchema } from './pincodes';
 
 export const productSchema = new mongoose.Schema({
     name: {
@@ -28,7 +29,7 @@ export const productSchema = new mongoose.Schema({
         default:"all"
     },
     avilablepincodes: {
-        type: [String],
+        type: [],
         required: true
     }
     ,
