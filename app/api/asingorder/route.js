@@ -11,20 +11,20 @@ export async function POST(req) {
         const id = new mongoose.Types.ObjectId(orderid);
         const boy = await deleveryboy.findOne({ username });
         if (!boy) {
-            return NextResponse.json({ message: "No such boy found",seccess:false },{status:404});
+            return NextResponse.json({ message: "No such boy found",success:false },{status:404});
         }
         const order = await Orders.findById(id);
         if (!order) {
-            return NextResponse.json({ message: "No such order found",seccess:false },{status:404});
+            return NextResponse.json({ message: "No such order found",success:false },{status:404});
         }
         order.successfull = "assigned"
         boy.orders.push(order);
         order.deleveryboy = boy.username
         await boy.save();
         await order.save();
-        return NextResponse.json({ message: "Delivery assigned successfully",seccess:true },{status:200});
+        return NextResponse.json({ message: "Delivery assigned successfully",success:true },{status:200});
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ message: "Something went wrong",seccess:false },{status:500});
+        return NextResponse.json({ message: "Something went wrong",success:false },{status:500});
     }
 }

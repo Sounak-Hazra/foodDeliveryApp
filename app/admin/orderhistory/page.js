@@ -4,6 +4,16 @@ import React, { useCallback, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from 'flowbite-react'
 import { useToast } from '@/hooks/use-toast'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
 
 const page = () => {
     const [date, setdate] = useState(() => new Date().toISOString().split('T')[0])
@@ -14,6 +24,7 @@ const page = () => {
     const [selectedDeliveryBoy, setSelectedDeliveryBoy] = useState('');
     const [deleveryboy, setdeleveryboy] = useState("all")
     const [totalsale, settotalsale] = useState(0)
+    const [selectboy, setselectboy] = useState("")
 
 
 
@@ -24,14 +35,11 @@ const page = () => {
         try {
             const res = await fetch('/api/gtedeliveryboys')
             const data = await res.json()
-            console.log(data)
             if (data.success) {
                 const value = data.value
                 setdeliveryboys(value)
-                console.log(value)
             } else {
                 setdeliveryboys([])
-                console.log(data.message)
             }
         } catch (error) {
             console.log(error)
@@ -39,8 +47,6 @@ const page = () => {
     }, [date]) // make sure date is included in the dependency array
 
     const fetchHistory = useCallback(async () => {
-        console.log(date)
-        console.log(orderstate)
         try {
             const res = await fetch('/api/orderhistory', {
                 method: 'POST',
@@ -50,12 +56,10 @@ const page = () => {
                 body: JSON.stringify({ date: date, successfull: orderstate, cancled: iscancled })
             })
             const data = await res.json()
-            console.log(data)
             if (data.success) {
                 setorders(data.orders)
             } else {
                 setorders([])
-                console.log(data.message)
             }
         } catch (error) {
             console.log(error)
@@ -69,7 +73,6 @@ const page = () => {
                 body: JSON.stringify({ id: order._id })
             })
             const data = await res.json()
-            console.log(data)
             if (data.success) {
                 fetchHistory()
                 toast({
@@ -83,10 +86,8 @@ const page = () => {
                     message: 'Order cancle failed',
                     type: 'error'
                 })
-                console.log(data.message)
             }
         } catch (error) {
-            console.log(error)
             toast({
                 title: 'Order cancle',
                 message: 'Order cancle failed',
@@ -95,82 +96,79 @@ const page = () => {
         }
     }
 
-    const handleSelectChange = (event, order) => {
+    const handleSelectChange = async (event, order) => {
+        console.log(event)
         try {
-            console.log(event.target.value)
-            const res = fetch('/api/asingorder', {
+            const res = await fetch('/api/asingorder', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username: event.target.value, orderid: order._id })
+                body: JSON.stringify({ username: event, orderid: order._id })
             })
-            const data = res.json()
-            console.log(data)
+            const data = await res.json()
             if (data.success) {
-                setSelectedDeliveryBoy(event.target.value)
+                setSelectedDeliveryBoy(event)
                 toast({
                     title: 'Delivery',
-                    message: 'Delivery assigned successfully',
+                    description: 'Delivery assigned successfully',
                     type: 'success'
                 })
             } else {
                 toast({
                     title: 'Delivery',
-                    message: 'Delivery assigned failed',
+                    description: 'Delivery assigned failed',
                     type: 'error'
                 })
-                console.log(data.message)
             }
 
 
         } catch (error) {
-
+            console.log(error)
+            toast({
+                title: 'Delivery',
+                description: 'Delivery assigned failed',
+                type: 'error'
+            })
+        } finally {
+            fetchHistory()
         }
-        console.log(event.target.value);
-        console.log(order);
     };
 
     // Correct usage of useEffect
     useEffect(() => {
         console.log('fetching history')
+        console.log(selectboy)
         fetchHistory()
         getdeliveryboys()
-    }, [date, fetchHistory, setorders, orderstate]) // re-run fetchHistory when the date changes
+    }, [date, fetchHistory, setorders, orderstate, selectboy]) // re-run fetchHistory when the date changes
 
     const datechange = (newDate) => {
-        console.log(newDate)
         const d = newDate
         setdate(d) // use setdate (React state) instead of setDate from date-fns
     }
     const seteOrderstate = (e) => {
 
         const d = e.target.value
-        console.log(d)
         setorderstate(d)
     }
 
     const calculateTotalSale = () => {
 
         let saleTotal = 0; // Temporary variable to hold the total
-        console.log(deleveryboy);
-        console.log(orders);
         if (deleveryboy === "all") {
             orders.map((order) => {
-                console.log(order.price);
                 saleTotal += order.price;
             });
         } else {
             orders.forEach((order) => {
                 if (order.deleveryboy === deleveryboy) {
-                    console.log(order.price);
                     saleTotal += order.price;
                 }
             });
         }
 
         settotalsale(saleTotal); // Update state with the final total
-        console.log(saleTotal);
     };
 
     useEffect(() => {
@@ -184,9 +182,8 @@ const page = () => {
                 body: JSON.stringify({ orderid: order._id })
             })
             const data = await res.json()
-            console.log(data)
             if (data.success) {
-                fetchHistory()
+
                 toast({
                     title: 'Order placed',
                     message: 'Order placed successfully',
@@ -198,7 +195,6 @@ const page = () => {
                     message: 'Order placed failed',
                     type: 'error'
                 })
-                console.log(data.message)
             }
         } catch (error) {
             console.log(error)
@@ -207,7 +203,14 @@ const page = () => {
                 message: 'Order placed failed',
                 type: 'error'
             })
+        } finally {
+            fetchHistory()
         }
+    }
+
+    const changeselectvalue = (e) => {
+        console.log(e)
+        setselectboy(e)
     }
 
     return (
@@ -300,19 +303,36 @@ const page = () => {
                                     {order.successfull === "accapted" &&
                                         <div className="flex flex-col items-start p-4 space-y-4">
                                             <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
-                                            <select
-                                                onChange={(e) => handleSelectChange(e, order)}
+                                            {/* <select
                                                 className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
                                             >
                                                 <option value="" disabled>
                                                     --Select--
                                                 </option>
                                                 {deliveryboys.map((boy) => (
-                                                    <option key={boy.id} value={boy.name}>
+                                                    <option onClick={() => { setselectboy(boy.name) }} key={boy.id} value={boy.name}>
                                                         {boy.username}
                                                     </option>
                                                 ))}
-                                            </select>
+                                            </select> */}
+                                            {
+                                                <Select  onValueChange={(e) => { changeselectvalue(e) }}>
+                                                    <SelectTrigger className="w-[180px]">
+                                                        <SelectValue placeholder="Select a fruit" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectLabel>Fruits</SelectLabel>
+                                                            {deliveryboys.map((boy) => (
+                                                                <SelectItem key={boy.name} value={boy.username}>{boy.username}</SelectItem>))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            }
+
+                                            {
+                                                <button onClick={() => handleSelectChange(selectboy, order)}>Assing delevery boy</button>
+                                            }
 
                                             {selectedDeliveryBoy && (
                                                 <p className="mt-2 text-blue-600 font-medium">
@@ -350,12 +370,11 @@ const page = () => {
                                             <div className="flex flex-col items-start p-4 space-y-4">
                                                 <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
                                                 <select
+                                                    value={selectedValue} // controlled component to ensure the value changes
                                                     onChange={(e) => handleSelectChange(e, order)}
                                                     className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
                                                 >
-                                                    <option value="" disabled>
-                                                        --Select--
-                                                    </option>
+                                                    <option value="">--Select--</option>
                                                     {deliveryboys.map((boy) => (
                                                         <option key={boy.id} value={boy.name}>
                                                             {boy.username}
@@ -413,6 +432,18 @@ const page = () => {
                                                     </option>
                                                 ))}
                                             </select>
+                                            {/* <Select onOpenChange={(e)=>{changeselectvalue(e)}}>
+                                                <SelectTrigger className="w-[180px]">
+                                                    <SelectValue placeholder="Select a fruit" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Fruits</SelectLabel>
+                                                        {deliveryboys.map((boy) => (
+                                                            <SelectItem key={boy.name} value={boy.name}>Apple</SelectItem>))}
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select> */}
 
                                             {selectedDeliveryBoy && (
                                                 <p className="mt-2 text-blue-600 font-medium">

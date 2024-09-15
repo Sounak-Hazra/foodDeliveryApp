@@ -9,6 +9,7 @@ import { z } from "zod"
 import Nav from "@/app/components/Nav"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { Loader2 } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast"
 import {
   Form,
@@ -82,7 +83,6 @@ const page = ({ params }) => {
   //address end
 
   const fetchOrder = useCallback(async () => {
-    console.log(params.id)
     const res = await fetch('/api/getorder', {
       method: 'POST',
       body: JSON.stringify({ orderid: params.id })
@@ -95,36 +95,98 @@ const page = ({ params }) => {
 
 
   const place = async () => {
+
     try {
+      // Show loader toast with Loader component directly in the title
+      const loadingToastId = toast({
+        title: (
+          <div className="flex items-center">
+            <Loader2
+              size={24} // Set size of the loader
+              color="#000000" // Set color of the loader
+              className="mr-2 animate-spin" // Add spinning animation if needed
+            />
+            Placing Order
+          </div>
+        ),
+        description: "Please wait while we process your order...",
+        className: "bg-white text-black", // White background for loader
+        duration: null, // Keep visible until manually dismissed or updated
+      });
+
+      // Call API to place the final order
       const response = await fetch("/api/finalplaceorder", {
         method: "POST",
         body: JSON.stringify({ orderid: params.id }),
-      })
-      const finalres = await response.json()
+      });
+      const finalres = await response.json();
+
+      // If order is successful
       if (finalres.success) {
+        // Update loader toast to success
         toast({
           title: "Success",
-          description: "Order placed successfully",
-        })
-        router.push("/ordersuccess/" + params.id)
+          description: "Order placed successfully. Redirecting...",
+          className: "bg-white text-black", // White background for success
+          duration: 5000, // Automatically close after a while
+        });
+
+        const payload = {
+          "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJhYWFmZWE3ZGU3MGI5ODJhNmYyNCIsIm5hbWUiOiJJbW1pIENvbm5lY3QiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjZkMmFhYWZlYTdkZTcwYjk4MmE2ZjE0IiwiYWN0aXZlUGxhbiI6IkJBU0lDX01PTlRITFkiLCJpYXQiOjE3MjUwODIyODd9.AeaDdvHIU7kaUZchAA9f3_bnPlAdOlE9E3cMgrc5QR8",
+          "campaignName": "Tiffin",
+          "destination": order.mobile,
+          "userName": "Immi Connect",
+          "templateParams": [],  // Your custom message
+          "source": "",
+          "media": {
+            "type": "text",
+            "text": {
+              "body": "Simple text message"
+            }
+          },
+          "buttons": [],
+          "carouselCards": [],
+          "location": {},
+          "paramsFallbackValue": {}
+        };
+
+        const res = await fetch('https://backend.aisensy.com/campaign/t1/api/v2', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        console.log(data);
+        router.push("/ordersuccess/" + params.id);
+
+
       }
+      // If order fails
       if (!finalres.success) {
         console.log(finalres.message);
+        // Update loader toast to error
         toast({
           title: "Error",
           description: finalres.message,
-          variant: "districtive",
-        })
+          variant: "destructive", // Assuming "destructive" is the error variant
+          className: "bg-white text-black", // White background for error
+        });
       }
     } catch (error) {
       console.log(error);
+      // Update loader toast to general error
       toast({
         title: "Error",
-        description: "Something went wrong",
-        variant: "districtive",
-      })
+        description: "Something went wrong. Please try again.",
+        variant: "destructive", // Assuming "destructive" is the error variant
+        className: "bg-white text-black", // White background for error
+      });
     }
-  }
+  };
+
 
   // const addtocart = (item) => {
   //     const updatedCart = order.product.map(cartItem =>

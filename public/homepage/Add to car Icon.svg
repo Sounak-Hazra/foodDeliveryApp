@@ -1,6 +1,6 @@
 <svg width="27" height="28" viewBox="0 0 27 28" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g id="Add to car Icon">
     <path id="Vector" d="M3.66972 9.81892C6.22252 2.97512 13.487 3.52048 13.487 3.52048C13.487 3.52048 20.7546 2.97512 23.3044 9.81892C24.3028 12.5202 24.3028 15.4993 23.3044 18.2006C20.7546 25.0413 13.487 24.4991 13.487 24.4991C13.487 24.4991 6.22252 25.0413 3.66971 18.2006C2.67435 15.4987 2.67435 12.5208 3.66972 9.81892Z" fill="#FFD700" stroke="#FFD700" stroke-width="1.87927" stroke-linecap="round" stroke-linejoin="round"/>
-    <path id="Vector_2" d="M13.7502 10.0874V18.675M17.9948 14.3306H9.50024" stroke="#F8F8F8" stroke-width="1.87927" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="Vector_2" d="M13.7502 10.0874V18.675M17.9948 14.3306H9.50024" stroke="#004d00" stroke-width="1.87927" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>

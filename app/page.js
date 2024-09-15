@@ -27,6 +27,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { date } from "zod";
+import { Loader2 } from "lucide-react";
 
 
 
@@ -43,14 +44,32 @@ export default function Home() {
   const [currentcategory, setcurrentcategory] = useState("all")
   const [issubmitting, setissubmitting] = useState(false)
 
-  const productRefs = useRef({}); // Object to store refs for products
+  const productRefs = useRef({}); 
 
   const { toast } = useToast();
   const router = useRouter();
 
 
   const handlepayment = async () => {
+  
     try {
+      
+      const loaderToastId = toast({
+        title: (
+          <div className="flex items-center">
+            <Loader2 
+              size={24} 
+              color="#000000" 
+              className="mr-2 animate-spin" 
+            />
+            Processing Payment
+          </div>
+        ),
+        description: "Please wait...",
+        className: "bg-white text-black", 
+        duration: null, 
+      });
+  
       setissubmitting(true);
       const data = await fetch("/api/makeorder", {
         method: "POST",
@@ -60,26 +79,39 @@ export default function Home() {
         }),
       });
       const response = await data.json();
+  
       if (!response.success) {
         toast({
           title: "Error",
-          message: response.message,
-          type: "error",
+          description: response.message,
+          variant: "destructive",
+          className: "bg-white text-black", 
         });
       } else {
+        
+        toast({
+          title: "Order Successful",
+          description: "Redirecting to order details...",
+          variant: "success",
+          className: "bg-white text-black", 
+        });
         router.push("/orderdetails/" + response.data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast({
-        title: "Error",
-        description: "Network error",
-        type: "error",
+        title: "Network Error",
+        description: "Please try again later.",
+        variant: "destructive",
+        className: "bg-white text-black", 
       });
     } finally {
       setissubmitting(false);
     }
-  }
+  };
+  
+
+
 
   const getcategory = useCallback(async () => {
     try {
@@ -307,7 +339,7 @@ export default function Home() {
       </div> */}
       <div className="mainitems min-h-screen relative top-[-104px] px-9 py-5">
         {totalProducts.map((product) => (
-          <div // Store ref for each product
+          <div 
             className="h-auto "
           >
             {currentcategory === "all" ?
@@ -409,7 +441,7 @@ export default function Home() {
       </div>
       <div className={`stikyfooter ${!emptycart ? "fixed bottom-[-100%] " : "fixed bottom-0"} border border-green-300 transition-all duration-1000 ease-in-out bottom-0 bg-green-200/50 w-screen h-16 rounded-t-3xl flex justify-around items-center  bg-green-50 z-10 font-bold text-lg hover:bg-green-100`}>
         <div className="p-2 rounded-full shadow-lg bg-green-600 "><img src="/homepage/home.svg" alt="" /></div>
-        <div onClick={()=>setshowCart(true)}  className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/cart.svg" alt="" /></div>
+        <div onClick={() => setshowCart(true)} className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/cart.svg" alt="" /></div>
         <div className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/offer.svg" alt="" /></div>
         <div className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/customersupport.svg" alt="" /></div>
       </div>
@@ -426,14 +458,14 @@ export default function Home() {
           </span>
         </div>
         <Separator className="w-full bg-green-200" />
-        <div className="w-full  h-[65%] overflow-y-auto mt-2 scrollbar-hide scroll-smooth">
+        <div className="w-full  h-[61%] overflow-y-auto mt-2 scrollbar-hide scroll-smooth">
           {cart.length > 0 && <div className="text-center text-[19px] font-[500] text-white">You have {cart.length} items in the cart</div>}
           <div className="text-center w-full h-full">
             {cart.length === 0 ?
               <>
                 <span className="my-auto text-[19px] font-[500] text-white">Your cart is empty</span>
 
-                <div onClick={()=>setshowCart(false)} className="text-center w-full flex items-center justify-center h-full self-center my-auto text-[19px] font-[500] text-white">
+                <div onClick={() => setshowCart(false)} className="text-center w-full flex items-center justify-center h-full self-center my-auto text-[19px] font-[500] text-white">
                   <img src="/slidebar/Add to car Icon.svg" alt="" />
                 </div>
               </> :
@@ -478,8 +510,6 @@ export default function Home() {
                       </span>
                     </div>
                     <div className="w-[100px] text-[15px] ml-auto flex items-center justify-end flex-col relative  font-[500]">
-                      <span>{new Date().toLocaleDateString()} </span>
-                      <span>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
                       <div className="addtocart flex justify-between items-center  py-1 rounded-lg h-10 my-auto  w-20  bottom-1 left-[8px]  z-10 font-bold text-lg  transition-colors">
                         <div
                           onClick={() => removefromcart(item)}
@@ -505,20 +535,20 @@ export default function Home() {
                   </div>
                   <Separator className="w-full bg-green-200/50" />
                 </>
-                // <div className="bg-white w-full p-2 my-3 shadow-lg border relative border-green-200 rounded-lg flex items-center space-x-4 max-w-sm mx-auto md:max-w-lg">
-                //   <div className="flex-shrink-0 relative">
-                //     <img
-                //       src={item.image}
-                //       alt="Vegetable Curry"
-                //       className="w-10 h-10 shadow-2xl rounded-full object-cover relative "
-                //     />
-                //     <span className="text-green-600 font-bold text-base">₹{item.price}</span>
-                //   </div>
-                //   <div className="w-full flex flex-col ">
-                //     <span className="text-lg font-bold">{item.name}</span>
-                //   </div>
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
 
-                // </div>
+                
               ))}
           </div>
 
