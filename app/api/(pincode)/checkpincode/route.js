@@ -7,8 +7,9 @@ export async function POST(req) {
     await dbConnect();
     try {
         const { pincode } = await req.json();
-        const avilable = pincodes.find({ pincode: pincode });
-        if (!avilable) {
+        const avilable = await pincodes.find({ pincode: pincode });
+        console.log(avilable);
+        if (avilable.length === 0) {
             return NextResponse.json({ message: "Pincode not avilable", success: false }, { status: 400 });
         }
         return NextResponse.json({ message: "Avilable Pincode", success: true }, { status: 200 });
