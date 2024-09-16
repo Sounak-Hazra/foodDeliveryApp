@@ -29,6 +29,7 @@ import {
 import { date } from "zod";
 import { Loader2 } from "lucide-react";
 import { Modal } from "flowbite-react";
+import Link from "next/link";
 
 
 
@@ -535,7 +536,7 @@ export default function Home() {
         <div className="p-2 rounded-full shadow-lg bg-green-600 "><img src="/homepage/home.svg" alt="" /></div>
         <div onClick={() => setshowCart(true)} className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/cart.svg" alt="" /></div>
         <div className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/offer.svg" alt="" /></div>
-        <div className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/customersupport.svg" alt="" /></div>
+        <Link href={"http://wa.link/uk3g4c"} target="blank"><div className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/customersupport.svg" alt="" /></div></Link>
       </div>
 
       <div className={`h-screen w-[90%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[50px] transition-all duration-1000 ease-in-out p-4`}>

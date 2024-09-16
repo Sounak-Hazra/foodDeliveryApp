@@ -282,7 +282,21 @@ const page = ({ params }) => {
             </div>
             <div className='text-[16px] font-semibold flex w-full justify-between'>
               <label htmlFor="deliverytime"> Delivery Time</label>
-              <input value={time} onChange={(e) => { setTime(e.target.value); console.log(e.target.value) }} id='deliverytime' type="time" />
+              <input
+                value={time}
+                onChange={(e) => {
+                  const timeValue = e.target.value;
+
+                  // Log time in 24-hour format
+                  console.log(timeValue);
+
+                  // Update state with the 24-hour format time
+                  setTime(timeValue);
+                }}
+                id="deliverytime"
+                type="time"
+                step="1"
+              />
             </div>
           </div>
         </div>
@@ -305,7 +319,6 @@ const page = ({ params }) => {
                     </div>
                     <div className='h-full w-[153px] flex flex-col mx-4 '>
                       <span className=' text-[20px] font-[500]'>{product.name}</span>
-                      <span className=' text-[14px] font-[300]'>29 Nov, 15:20 pm </span>
                     </div>
                     <div className='flex flex-col items-end h-full gap-4'>
                       <div className="price w-[88px] h-[26px] text-end text-[20px] font-[500]">{product.price}₹</div>
@@ -467,7 +480,7 @@ const page = ({ params }) => {
                         <FormControl>
                           {/* <Input placeholder="Alternate phone number" {...field} /> */}
                           <div className="relative z-0 w-full mb-5 group">
-                            <input {...field} type="text" className="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-green-300 focus:outline-none focus:ring-0 focus:border-white peer" placeholder=" " required />
+                            <input {...field} type="text" className="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-green-300 focus:outline-none focus:ring-0 focus:border-white peer" placeholder=" " />
                             <label className="text-white peer-focus:font-medium absolute text-sm text-white-500 dark:text-white duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-white peer-focus:dark:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">(optional) Number </label>
                           </div>
                         </FormControl>
@@ -484,7 +497,7 @@ const page = ({ params }) => {
                       <FormControl>
                         {/* <Textarea placeholder="Leave a message..." {...field} /> */}
                         <div className="relative z-0 w-full mt-3 mb-5 group">
-                          <textarea {...field} type="time" className="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-green-300 focus:outline-none focus:ring-0 focus:border-white peer" placeholder=" " required />
+                          <textarea {...field} type="time" className="block py-2.5 px-0 w-full text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-green-300 focus:outline-none focus:ring-0 focus:border-white peer" placeholder=" " />
                           <label className="text-white peer-focus:font-medium absolute text-sm text-white-500 dark:text-white duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-white peer-focus:dark:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Message (optional)</label>
                         </div>
                       </FormControl>

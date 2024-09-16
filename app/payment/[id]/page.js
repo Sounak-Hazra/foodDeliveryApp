@@ -145,13 +145,13 @@ const page = ({ params }) => {
           "media": {
             "url": "https://whatsapp-media-library.s3.ap-south-1.amazonaws.com/VIDEO/6353da2e153a147b991dd812/3837837_11096001080p4k1280x720.mp4",
             "filename": "sample_media"
-          },        
+          },
           "buttons": [],
           "carouselCards": [],
           "location": {},
           "paramsFallbackValue": {
             "FirstName": "user"
-          }        
+          }
         };
 
         const res = await fetch('https://backend.aisensy.com/campaign/t1/api/v2', {
@@ -161,9 +161,38 @@ const page = ({ params }) => {
           },
           body: JSON.stringify(payload)
         });
+        const payload2 = {
+          "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJhYWFmZWE3ZGU3MGI5ODJhNmYyNCIsIm5hbWUiOiJJbW1pIENvbm5lY3QiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjZkMmFhYWZlYTdkZTcwYjk4MmE2ZjE0IiwiYWN0aXZlUGxhbiI6IkJBU0lDX01PTlRITFkiLCJpYXQiOjE3MjUwODIyODd9.AeaDdvHIU7kaUZchAA9f3_bnPlAdOlE9E3cMgrc5QR8",
+          "campaignName": "Order_confirmed",
+          "destination": "+919332667166",
+          "userName": "Immi Connect",
+          "templateParams": [
+            `${"A order is placed check it !"}`,
+            `${order._id}`,
+            `${order.price}₹`,
+          ],  // Your custom message
+          "source": "new-landing-page form",
+          "media": {
+            "url": "https://whatsapp-media-library.s3.ap-south-1.amazonaws.com/VIDEO/6353da2e153a147b991dd812/3837837_11096001080p4k1280x720.mp4",
+            "filename": "sample_media"
+          },
+          "buttons": [],
+          "carouselCards": [],
+          "location": {},
+          "paramsFallbackValue": {
+            "FirstName": "user"
+          }
+        };
+
+        const resforadmin = await fetch('https://backend.aisensy.com/campaign/t1/api/v2', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload2)
+        });
 
         const data = await res.json();
-        console.log(data);
         router.push("/ordersuccess/" + params.id);
 
 

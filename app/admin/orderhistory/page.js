@@ -298,6 +298,8 @@ const page = () => {
                                     <p><strong>Mobile number:</strong> {order.mobile}</p>
                                     <p><strong>Payment type:</strong> {order.paymentType}</p>
                                     <p><strong>Price:</strong> {order.price}</p>
+                                    <p><strong>Time:</strong> {order.deliveryTime}</p>
+                                    <p><strong>Date:</strong> {order.date}</p>
                                     <p><strong>Status:</strong> {order.successfull}</p>
                                     {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
                                     {order.successfull === "accapted" &&
@@ -316,7 +318,7 @@ const page = () => {
                                                 ))}
                                             </select> */}
                                             {
-                                                <Select  onValueChange={(e) => { changeselectvalue(e) }}>
+                                                <Select onValueChange={(e) => { changeselectvalue(e) }}>
                                                     <SelectTrigger className="w-[180px]">
                                                         <SelectValue placeholder="Select a fruit" />
                                                     </SelectTrigger>
@@ -364,6 +366,8 @@ const page = () => {
                                         <p><strong>Mobile number:</strong> {order.mobile}</p>
                                         <p><strong>Payment type:</strong> {order.paymentType}</p>
                                         <p><strong>Price:</strong> {order.price}</p>
+                                        <p><strong>Time:</strong> {order.deliveryTime}</p>
+                                        <p><strong>Date:</strong> {order.date}</p>
                                         <p><strong>Status:</strong> {order.successfull}</p>
                                         {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
                                         {order.successfull === "accapted" &&
@@ -414,6 +418,8 @@ const page = () => {
                                     <p><strong>Mobile number:</strong> {order.mobile}</p>
                                     <p><strong>Payment type:</strong> {order.paymentType}</p>
                                     <p><strong>Price:</strong> {order.price}</p>
+                                    <p><strong>Time:</strong> {order.deliveryTime}</p>
+                                    <p><strong>Date:</strong> {order.date}</p>
                                     <p><strong>Status:</strong> {order.successfull}</p>
                                     {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
                                     {order.successfull === "accapted" &&

@@ -48,7 +48,7 @@ const Page = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({username: phoneNumber,  id: order._id }),
+                body: JSON.stringify({ username: phoneNumber, id: order._id }),
             });
             const data = await res.json();
             if (data.success) {
@@ -69,6 +69,8 @@ const Page = () => {
         } catch (error) {
             console.log(error); // Debugging: Log any errors
             alert('Something went wrong');
+        } finally {
+            handleLogin();
         }
     }
 
