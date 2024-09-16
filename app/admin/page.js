@@ -19,7 +19,7 @@ const page = () => {
                         <p className="text-gray-600 mb-6">
                             You must be logged in as an admin to access this page.
                         </p>
-                        <button onClick={() => signIn("credentials", {
+                        <button onClick={() => signIn(null, {
                             redirect: true,
                             callbackUrl: "/admin"
                         })} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-300">
