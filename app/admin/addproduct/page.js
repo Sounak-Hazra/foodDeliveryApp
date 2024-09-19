@@ -71,6 +71,7 @@ export function ProfileForm() {
                 });
             } else {
                 const res = response.data
+                console.log(res);
                 setcategorys(res);
             }
         } catch (error) {
