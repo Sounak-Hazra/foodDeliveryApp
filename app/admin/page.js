@@ -64,7 +64,7 @@ const page = () => {
                             <Link href="/admin/addproduct" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
                                 ➕ Add a New Product
                             </Link>
-                            <Link href="/admin/editproduct" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
+                            <Link href="/admin/addproduct/allproduct" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
                                 ✏️ Edit Existing Products
                             </Link>
                         </div>
@@ -90,7 +90,7 @@ const page = () => {
                             <Link href="/admin/addcategory" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
                                 ➕ Add a New Product category
                             </Link>
-                            <Link href="/admin/category/allcategory" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
+                            <Link href="/admin/addcategory/allcategory" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
                                 ✏️ Delete category
                             </Link>
                         </div>
