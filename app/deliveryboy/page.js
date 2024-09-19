@@ -200,7 +200,7 @@ const Page = () => {
                 {/* Navbar */}
                 <nav className="bg-green-200/70 p-3 flex justify-between items-center shadow-md">
                     <h1 className="text-green-800 text-2xl font-bold"><Link href={"/admin"}>Delivery Tracker</Link></h1>
-                    <button className='px-3 py-2 bg-green-700 text-white font-semibold rounded-lg text-sm md:text-base hover:bg-green-800 transition'>
+                    <button onClick={()=>logout()} className='px-3 py-2 bg-green-700 text-white font-semibold rounded-lg text-sm md:text-base hover:bg-green-800 transition'>
                         Log out
                     </button>
                 </nav>
