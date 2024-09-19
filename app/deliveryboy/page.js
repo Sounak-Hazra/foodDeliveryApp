@@ -46,7 +46,11 @@ const Page = () => {
             }
         } catch (error) {
             console.log(error); // Debugging: Log any errors
-            alert('Something went wrong');
+            toast({
+                title: 'Error',
+                description: 'Something went wrong',
+                type: 'error',
+            });
         }
     };
 

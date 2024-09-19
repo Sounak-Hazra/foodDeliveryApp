@@ -3,6 +3,8 @@ import "./globals.css";
 import "./custom.css";
 import { Toaster } from "@/components/ui/toaster"
 import SessionWrap from "@/context/SessionWrap";
+import Loading from "./components/Loading";
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,9 +29,11 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased  `}
       >
         <SessionWrap >
+        <Suspense fallback={<Loading />}>
           {children}
           <Toaster />
-        </SessionWrap>
+          </Suspense>
+          </SessionWrap>
       </body>
     </html>
   );

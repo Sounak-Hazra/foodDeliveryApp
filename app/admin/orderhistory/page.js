@@ -14,151 +14,221 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Loader2 } from 'lucide-react'
 
 
 const page = () => {
-    const [date, setdate] = useState(() => new Date().toISOString().split('T')[0])
-    const [orders, setorders] = useState([])
-    const [orderstate, setorderstate] = useState("created")
-    const [iscancled, setiscancled] = useState(false)
-    const [deliveryboys, setdeliveryboys] = useState([])
+    const { toast } = useToast();
+    
+    const [date, setdate] = useState(() => new Date().toISOString().split('T')[0]);
+    const [orders, setorders] = useState([]);
+    const [orderstate, setorderstate] = useState("created");
+    const [iscancled, setiscancled] = useState(false);
+    const [deliveryboys, setdeliveryboys] = useState([]);
     const [selectedDeliveryBoy, setSelectedDeliveryBoy] = useState('');
-    const [deleveryboy, setdeleveryboy] = useState("all")
-    const [totalsale, settotalsale] = useState(0)
-    const [selectboy, setselectboy] = useState("")
-
-
-
-    const { toast } = useToast()
-
-
+    const [deleveryboy, setdeleveryboy] = useState("all");
+    const [totalsale, settotalsale] = useState(0);
+    const [selectboy, setselectboy] = useState("");
+    
     const getdeliveryboys = useCallback(async () => {
+    
         try {
-            const res = await fetch('/api/gtedeliveryboys')
-            const data = await res.json()
-            if (data.success) {
-                const value = data.value
-                setdeliveryboys(value)
-                console.log(value)
-            } else {
-                setdeliveryboys([])
-            }
+            const res = await fetch('/api/gtedeliveryboys');
+            const data = await res.json();
+            setdeliveryboys(data.success ? data.value : []);
         } catch (error) {
-            console.log(error)
-        }
-    }, [date]) // make sure date is included in the dependency array
-
+            console.log(error);
+        } 
+    }, [date]);
+    
     const fetchHistory = useCallback(async () => {
+        const loadingToast = toast({
+            title: (
+                <div className="flex items-center">
+                  <Loader2
+                    size={24}
+                    color="#000000"
+                    className="mr-2 animate-spin"
+                  />
+                  Fetching order history please wait...
+                </div>
+              ),
+            description: 'Fetching order history...',
+            type: 'loading',
+            duration: Infinity
+        });
+    
         try {
             const res = await fetch('/api/orderhistory', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ date: date, successfull: orderstate, cancled: iscancled })
-            })
-            const data = await res.json()
-            if (data.success) {
-                setorders(data.orders)
-            } else {
-                setorders([])
-            }
+            });
+            const data = await res.json();
+            setorders(data.success ? data.orders : []);
         } catch (error) {
-            console.log(error)
+            console.log(error);
+        } finally {
+            toast({
+                id: loadingToast.id,
+                title: 'Order History',
+                description: 'Fetched successfully!',
+                type: 'success',
+                duration: 3000
+            });
         }
-    }, [date, orderstate]) // make sure date is included in the dependency array
-
+    }, [date, orderstate]);
+    
     const cancleorder = async (order) => {
+        const loadingToast = toast({
+            title: (
+                <div className="flex items-center">
+                  <Loader2
+                    size={24}
+                    color="#000000"
+                    className="mr-2 animate-spin"
+                  />
+                  Cancling Order Please wait...
+                </div>
+              ),
+            description: 'Processing...',
+            type: 'loading',
+            duration: Infinity
+        });
+    
         try {
             const res = await fetch('/api/cancleorder', {
                 method: 'POST',
                 body: JSON.stringify({ id: order._id })
-            })
-            const data = await res.json()
-            if (data.success) {
-                fetchHistory()
-                toast({
-                    title: 'Order cancle',
-                    message: 'Order cancle successfully',
-                    type: 'success'
-                })
-            } else {
-                toast({
-                    title: 'Order cancle',
-                    message: 'Order cancle failed',
-                    type: 'error'
-                })
-            }
+            });
+            const data = await res.json();
+            fetchHistory();
+            toast({
+                id: loadingToast.id,
+                title: 'Order Cancelled',
+                description: data.success ? 'Cancelled successfully!' : 'Cancellation failed!',
+                type: data.success ? 'success' : 'error',
+                duration: 3000
+            });
         } catch (error) {
             toast({
-                title: 'Order cancle',
-                message: 'Order cancle failed',
-                type: 'error'
-            })
+                id: loadingToast.id,
+                title: 'Order Cancelled',
+                description: 'Cancellation failed!',
+                type: 'error',
+                duration: 3000
+            });
         }
-    }
-
+    };
+    
     const handleSelectChange = async (event, order) => {
-        console.log(event)
+        const loadingToast = toast({
+            title: (
+                <div className="flex items-center">
+                  <Loader2
+                    size={24}
+                    color="#000000"
+                    className="mr-2 animate-spin"
+                  />
+                  Assigning deleveryboy
+                </div>
+              ),
+            description: 'Processing...',
+            type: 'loading',
+            duration: Infinity
+        });
+    
         try {
             const res = await fetch('/api/asingorder', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: event, orderid: order._id })
-            })
-            const data = await res.json()
-            console.log(data)
-            if (data.success) {
-                setSelectedDeliveryBoy(event)
-                toast({
-                    title: 'Delivery',
-                    description: 'Delivery assigned successfully',
-                    type: 'success'
-                })
-            } else {
-                toast({
-                    title: 'Delivery',
-                    description: 'Delivery assigned failed',
-                    type: 'error'
-                })
-            }
-
-
-        } catch (error) {
-            console.log(error)
+            });
+            const data = await res.json();
+            setSelectedDeliveryBoy(event);
             toast({
+                id: loadingToast.id,
                 title: 'Delivery',
-                description: 'Delivery assigned failed',
-                type: 'error'
-            })
+                description: data.success ? 'Assigned successfully!' : 'Assignment failed!',
+                type: data.success ? 'success' : 'error',
+                duration: 3000
+            });
+        } catch (error) {
+            toast({
+                id: loadingToast.id,
+                title: 'Delivery',
+                description: 'Assignment failed!',
+                type: 'error',
+                duration: 3000
+            });
         } finally {
-            fetchHistory()
+            fetchHistory();
         }
     };
-
-    // Correct usage of useEffect
+    
+    const accapet = async (order) => {
+        const loadingToast = toast({
+            title: (
+                <div className="flex items-center">
+                  <Loader2
+                    size={24}
+                    color="#000000"
+                    className="mr-2 animate-spin"
+                  />
+                  Accepting order please wait...
+                </div>
+              ),
+            description: 'Processing...',
+            type: 'loading',
+            duration: Infinity
+        });
+    
+        try {
+            const res = await fetch('/api/accapetorder', {
+                method: 'POST',
+                body: JSON.stringify({ orderid: order._id })
+            });
+            const data = await res.json();
+            toast({
+                id: loadingToast.id,
+                title: 'Order',
+                description: data.success ? 'Placed successfully!' : 'Placement failed!',
+                type: data.success ? 'success' : 'error',
+                duration: 3000
+            });
+        } catch (error) {
+            toast({
+                id: loadingToast.id,
+                title: 'Order',
+                description: 'Placement failed!',
+                type: 'error',
+                duration: 3000
+            });
+        } finally {
+            fetchHistory();
+        }
+    };
+    
+    // useEffect hooks as it is
     useEffect(() => {
-        console.log('fetching history')
-        console.log(selectboy)
-        fetchHistory()
-        getdeliveryboys()
-    }, [date, fetchHistory, setorders, orderstate, selectboy]) // re-run fetchHistory when the date changes
-
+        console.log('fetching history');
+        console.log(selectboy);
+        fetchHistory();
+        getdeliveryboys();
+    }, [date, fetchHistory, setorders, orderstate, selectboy]);
+    
     const datechange = (newDate) => {
-        const d = newDate
-        setdate(d) // use setdate (React state) instead of setDate from date-fns
-    }
+        const d = newDate;
+        setdate(d);
+    };
+    
     const seteOrderstate = (e) => {
-
-        const d = e.target.value
-        setorderstate(d)
-    }
-
+        const d = e.target.value;
+        setorderstate(d);
+    };
+    
     const calculateTotalSale = () => {
-
-        let saleTotal = 0; // Temporary variable to hold the total
+        let saleTotal = 0;
         if (deleveryboy === "all") {
             orders.map((order) => {
                 saleTotal += order.price;
@@ -170,51 +240,19 @@ const page = () => {
                 }
             });
         }
-
-        settotalsale(saleTotal); // Update state with the final total
+    
+        settotalsale(saleTotal);
     };
-
+    
     useEffect(() => {
         calculateTotalSale();
     }, [orderstate, deleveryboy, orders]);
-
-    const accapet = async (order) => {
-        try {
-            const res = await fetch('/api/accapetorder', {
-                method: 'POST',
-                body: JSON.stringify({ orderid: order._id })
-            })
-            const data = await res.json()
-            if (data.success) {
-
-                toast({
-                    title: 'Order placed',
-                    message: 'Order placed successfully',
-                    type: 'success'
-                })
-            } else {
-                toast({
-                    title: 'Order placed',
-                    message: 'Order placed failed',
-                    type: 'error'
-                })
-            }
-        } catch (error) {
-            console.log(error)
-            toast({
-                title: 'Order placed',
-                message: 'Order placed failed',
-                type: 'error'
-            })
-        } finally {
-            fetchHistory()
-        }
-    }
-
+    
     const changeselectvalue = (e) => {
-        console.log(e)
-        setselectboy(e)
-    }
+        console.log(e);
+        setselectboy(e);
+    };
+    
 
     return (
         <>
