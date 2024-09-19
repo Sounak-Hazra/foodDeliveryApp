@@ -3,6 +3,7 @@ import { set } from 'date-fns' // renamed to avoid conflict
 import React, { useCallback, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from 'flowbite-react'
+import Sidebar from '@/app/components/Sidebar'
 import { useToast } from '@/hooks/use-toast'
 import {
     Select,
@@ -107,6 +108,7 @@ const page = () => {
                 body: JSON.stringify({ username: event, orderid: order._id })
             })
             const data = await res.json()
+            console.log(data)
             if (data.success) {
                 setSelectedDeliveryBoy(event)
                 toast({
@@ -215,267 +217,293 @@ const page = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-gray-100">
+            <div className="min-h-screen bg-gradient-to-r from-gray-100 to-gray-300">
                 {/* Navbar */}
-                <nav className="bg-blue-600 p-4 flex justify-between items-center">
-                    <h1 className="text-white text-2xl font-bold"><Link href={"/admin"}>Delivery Tracker</Link></h1>
-                    <div className="flex items-center flex-col gap-2 md:flex-row sm:flex-row">
-                        <label htmlFor="delivery-time" className="text-white mr-2">Select Date:</label>
-                        <input
-                            type="date"
-                            id="delivery-time"
-                            className="rounded-md border border-gray-300 px-2 py-1"
-                            onChange={(e) => { datechange(e.target.value) }} // onChange updates the date state
-                        />
-                        <label htmlFor="selectstate">Select state</label>
-                        <select id="selectstate" className="rounded-md border border-gray-300 px-2 py-1 ml-2" onChange={(e) => { seteOrderstate(e) }}>
-                            <option value="created">Created</option>
-                            <option value="placed">Placed</option>
-                            <option value="accapted">Accapted</option>
-                            <option value="assigned">Assigned order</option>
-                            <option value="cancled">Cancled order</option>
-                            <option value="successfull">Successfull</option>
-                        </select>
+                <nav className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 shadow-lg">
+                    <div className="container mx-auto flex justify-between items-center">
+                        <h1 className="text-white text-3xl font-extrabold hidden md:inline-block tracking-wide">
+                            <Link href={"/admin"}>Delivery Tracker</Link>
+                        </h1>
+                        <div className="flex items-center space-x-4">
+                            <div className="flex items-center">
+                                {/* <label htmlFor="delivery-time" className="text-white mr-2 text-lg">Select Date:</label> */}
+                                <input
+                                    type="date"
+                                    id="delivery-time"
+                                    className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    onChange={(e) => datechange(e.target.value)}
+                                />
+                            </div>
+                            <div className="flex items-center">
+                                {/* <label htmlFor="selectstate" className="text-white text-lg">Select State:</label> */}
+                                <select
+                                    id="selectstate"
+                                    className="rounded-md border border-gray-300 px-3 py-2 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                    onChange={(e) => seteOrderstate(e)}
+                                >
+                                    <option value="created">Created</option>
+                                    <option value="placed">Placed</option>
+                                    <option value="accapted">Accapted</option>
+                                    <option value="assigned">Assigned</option>
+                                    <option value="cancled">Cancled</option>
+                                    <option value="successfull">Successfull</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </nav>
 
-                {
-                    orderstate === "successfull" &&
-                    <section className="p-6 flex w-full gap-2">
-                        <h2 className="text-xl font-semibold">Total Sale: ₹{totalsale}</h2>
-                        <select
-                            onChange={(e) => setdeleveryboy(e.target.value)}
-                            className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
-                        >
-                            <option value="" disabled>
-                                --Select--
-                            </option>
-                            <option key={"all"} value={"all"}>
-                                All
-                            </option>
-                            {deliveryboys.map((boy) => (
-                                <option key={boy.id} value={boy.name}>
-                                    {boy.username}
-                                </option>
-                            ))}
-                        </select>
-                    </section>
-                }
-                {
-                    orderstate === "cancled" &&
-                    <section className="p-6 flex w-full gap-2">
-                        <h2 className="text-xl font-semibold">Delevery Boy :</h2>
-                        <select
-                            onChange={(e) => setdeleveryboy(e.target.value)}
-                            className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
-                        >
-                            <option value="" disabled>
-                                --Select--
-                            </option>
-                            <option key={"all"} value={"all"}>
-                                All
-                            </option>
-                            {deliveryboys.map((boy) => (
-                                <option key={boy.id} value={boy.name}>
-                                    {boy.username}
-                                </option>
-                            ))}
-                        </select>
-                    </section>
-                }
+                {/* Content Section */}
+                <div>
+                    <div className="container mx-auto p-5">
+                        {orderstate === "successfull" && (
+                            <section className="p-4 bg-white shadow-md rounded-lg mb-6 flex items-center gap-4">
+                                <h2 className="text-2xl font-bold text-blue-700">Total Sale: ₹{totalsale}</h2>
+                                <select
+                                    onChange={(e) => setdeleveryboy(e.target.value)}
+                                    className="w-48 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
+                                >
+                                    <option value="" disabled>
+                                        --Select--
+                                    </option>
+                                    <option key={"all"} value={"all"}>
+                                        All
+                                    </option>
+                                    {deliveryboys.map((boy) => (
+                                        <option key={boy.id} value={boy.name}>
+                                            {boy.username}
+                                        </option>
+                                    ))}
+                                </select>
+                            </section>
+                        )}
 
-                {/* Card Section */}
-                <section className="p-6 mysectionGrid">
-                    {orders.map((order, index) => (
-                        (!orderstate == "successfull" || deleveryboy === "all") ?
-                            (!orderstate == "cancled" || deleveryboy === "all") ?
-                                <div key={index} className="card bg-white shadow-md rounded-lg p-4">
-                                    <h2 className="text-xl font-semibold mb-2">Name: {order.name}</h2>
-                                    <h2 className="text-xl font-semibold mb-2">ID: {order._id}</h2>
-                                    <p><strong>Full address:</strong> {order.address}</p>
-                                    <p><strong>City:</strong> {order.city}</p>
-                                    <p><strong>Landmark:</strong> {order.landmark}</p>
-                                    <p><strong>Mobile number:</strong> {order.mobile}</p>
-                                    <p><strong>Payment type:</strong> {order.paymentType}</p>
-                                    <p><strong>Price:</strong> {order.price}</p>
-                                    <p><strong>Time:</strong> {order.deliveryTime}</p>
-                                    <p><strong>Date:</strong> {order.date}</p>
-                                    <p><strong>Status:</strong> {order.successfull}</p>
-                                    {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
-                                    {order.successfull === "accapted" &&
-                                        <div className="flex flex-col items-start p-4 space-y-4">
-                                            <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
-                                            {/* <select
-                                                className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
-                                            >
-                                                <option value="" disabled>
-                                                    --Select--
-                                                </option>
-                                                {deliveryboys.map((boy) => (
-                                                    <option onClick={() => { setselectboy(boy.name) }} key={boy.id} value={boy.name}>
-                                                        {boy.username}
-                                                    </option>
-                                                ))}
-                                            </select> */}
-                                            {
-                                                <Select onValueChange={(e) => { changeselectvalue(e) }}>
-                                                    <SelectTrigger className="w-[180px]">
-                                                        <SelectValue placeholder="Select a fruit" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectGroup>
-                                                            <SelectLabel>Fruits</SelectLabel>
-                                                            {deliveryboys.map((boy) => (
-                                                                <SelectItem key={boy.name} value={boy.username}>{boy.username}</SelectItem>))}
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
-                                            }
+                        {orderstate === "cancled" && (
+                            <section className="p-4 bg-white shadow-md rounded-lg mb-6 flex items-center gap-4">
+                                <h2 className="text-2xl font-bold text-red-600">Delivery Boy:</h2>
+                                <select
+                                    onChange={(e) => setdeleveryboy(e.target.value)}
+                                    className="w-48 p-2 border-2 border-red-500 rounded-md focus:border-red-700 focus:outline-none bg-gray-50 text-gray-700"
+                                >
+                                    <option value="" disabled>
+                                        --Select--
+                                    </option>
+                                    <option key={"all"} value={"all"}>
+                                        All
+                                    </option>
+                                    {deliveryboys.map((boy) => (
+                                        <option key={boy.id} value={boy.name}>
+                                            {boy.username}
+                                        </option>
+                                    ))}
+                                </select>
+                            </section>
+                        )}
 
-                                            {
-                                                <button onClick={() => handleSelectChange(selectboy, order)}>Assing delevery boy</button>
-                                            }
+                        {/* Cards Section */}
+                        <section className=" mygridadmin gap-4">
+                            {orders.map((order, index) => {
+                                return (
+                                    <>
+                                        {(orderstate === "successfull" && deleveryboy === "all") && (
 
-                                            {selectedDeliveryBoy && (
-                                                <p className="mt-2 text-blue-600 font-medium">
-                                                    Selected Delivery Boy: {selectedDeliveryBoy}
-                                                </p>
-                                            )}
-                                        </div>}
-                                    {order.successfull === "created" || order.successfull === "placed" && <Button className='text-black' onClick={() => { cancleorder(order) }}>Cancle order</Button>}
-                                    {order.successfull === "assigned" && <p><strong>Delevery By</strong> {order.deleveryboy}</p>}
-                                    {/* Display Items */}
-                                    <div className="mt-4 h-32 overflow-y-auto">
-                                        <h3 className="font-semibold text-lg">Items:</h3>
-                                        <ul className="list-disc pl-5">
-                                            {order.product.map((item, i) => (
-                                                <li key={i} className="mt-2">
-                                                    <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </div> :
-                                <>
-                                    {order.deleveryboy == deleveryboy && <div key={index} className="card bg-white shadow-md rounded-lg p-4">
-                                        <h2 className="text-xl font-semibold mb-2">Name: {order.name}</h2>
-                                        <h2 className="text-xl font-semibold mb-2">ID: {order._id}</h2>
-                                        <p><strong>Full address:</strong> {order.address}</p>
-                                        <p><strong>City:</strong> {order.city}</p>
-                                        <p><strong>Landmark:</strong> {order.landmark}</p>
-                                        <p><strong>Mobile number:</strong> {order.mobile}</p>
-                                        <p><strong>Payment type:</strong> {order.paymentType}</p>
-                                        <p><strong>Price:</strong> {order.price}</p>
-                                        <p><strong>Time:</strong> {order.deliveryTime}</p>
-                                        <p><strong>Date:</strong> {order.date}</p>
-                                        <p><strong>Status:</strong> {order.successfull}</p>
-                                        {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
-                                        {order.successfull === "accapted" &&
-                                            <div className="flex flex-col items-start p-4 space-y-4">
-                                                <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
-                                                <select
-                                                    value={selectedValue} // controlled component to ensure the value changes
-                                                    onChange={(e) => handleSelectChange(e, order)}
-                                                    className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
-                                                >
-                                                    <option value="">--Select--</option>
-                                                    {deliveryboys.map((boy) => (
-                                                        <option key={boy.id} value={boy.name}>
-                                                            {boy.username}
-                                                        </option>
-                                                    ))}
-                                                </select>
+                                            <div key={index} className="card bg-white shadow-xl rounded-lg p-4 transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                                                <h2 className="text-xl font-bold text-gray-700 mb-2">Name: {order.name}</h2>
+                                                <h2 className="text-base text-gray-600">ID: {order._id}</h2>
+                                                <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
+                                                <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
+                                                <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
+                                                <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
+                                                <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
+                                                <p className="text-gray-600"><strong>Time:</strong> {order.deliveryTime}</p>
+                                                <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
+                                                <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
+                                                <p className="text-gray-600"><strong>Delevery by:</strong> {order.deleveryboy}</p>
 
-                                                {selectedDeliveryBoy && (
-                                                    <p className="mt-2 text-blue-600 font-medium">
-                                                        Selected Delivery Boy: {selectedDeliveryBoy}
-                                                    </p>
+                                                {/* Display Items */}
+                                                <div className="mt-3 h-28 overflow-y-auto">
+                                                    <h3 className="font-semibold text-lg text-gray-800">Items:</h3>
+                                                    <ul className="list-disc pl-5 space-y-1">
+                                                        {order.product.map((item, i) => (
+                                                            <li key={i}>
+                                                                <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        )}
+                                        {(orderstate === "successfull" && deleveryboy !== "all" && deleveryboy === order.deleveryboy) && (
+
+                                            <div key={index} className="card bg-white shadow-xl rounded-lg p-4 transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                                                <h2 className="text-xl font-bold text-gray-700 mb-2">Name: {order.name}</h2>
+                                                <h2 className="text-base text-gray-600">ID: {order._id}</h2>
+                                                <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
+                                                <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
+                                                <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
+                                                <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
+                                                <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
+                                                <p className="text-gray-600"><strong>Time:</strong> {order.deliveryTime}</p>
+                                                <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
+                                                <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
+                                                <p className="text-gray-600"><strong>Delevery by:</strong> {order.deleveryboy}</p>
+                                                {/* Display Items */}
+                                                <div className="mt-3 h-28 overflow-y-auto">
+                                                    <h3 className="font-semibold text-lg text-gray-800">Items:</h3>
+                                                    <ul className="list-disc pl-5 space-y-1">
+                                                        {order.product.map((item, i) => (
+                                                            <li key={i}>
+                                                                <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        )}
+                                        {(orderstate === "cancled" && deleveryboy === "all") && (
+
+                                            <div key={index} className="card bg-white shadow-xl rounded-lg p-4 transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                                                <h2 className="text-xl font-bold text-gray-700 mb-2">Name: {order.name}</h2>
+                                                <h2 className="text-base text-gray-600">ID: {order._id}</h2>
+                                                <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
+                                                <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
+                                                <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
+                                                <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
+                                                <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
+                                                <p className="text-gray-600"><strong>Time:</strong> {order.deliveryTime}</p>
+                                                <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
+                                                <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
+                                                <p className="text-gray-600"><strong>cancled by:</strong> {order.deleveryboy}</p>
+
+                                                {/* Display Items */}
+                                                <div className="mt-3 h-28 overflow-y-auto">
+                                                    <h3 className="font-semibold text-lg text-gray-800">Items:</h3>
+                                                    <ul className="list-disc pl-5 space-y-1">
+                                                        {order.product.map((item, i) => (
+                                                            <li key={i}>
+                                                                <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        )}
+                                        {(orderstate === "cancled" && deleveryboy !== "all" && deleveryboy === order.deleveryboy) && (
+
+                                            <div key={index} className="card bg-white shadow-xl rounded-lg p-4 transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                                                <h2 className="text-xl font-bold text-gray-700 mb-2">Name: {order.name}</h2>
+                                                <h2 className="text-base text-gray-600">ID: {order._id}</h2>
+                                                <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
+                                                <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
+                                                <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
+                                                <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
+                                                <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
+                                                <p className="text-gray-600"><strong>Time:</strong> {order.deliveryTime}</p>
+                                                <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
+                                                <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
+                                                <p className="text-gray-600"><strong>cancled by:</strong> {order.deleveryboy}</p>
+
+                                                {/* Display Items */}
+                                                <div className="mt-3 h-28 overflow-y-auto">
+                                                    <h3 className="font-semibold text-lg text-gray-800">Items:</h3>
+                                                    <ul className="list-disc pl-5 space-y-1">
+                                                        {order.product.map((item, i) => (
+                                                            <li key={i}>
+                                                                <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        )}
+                                        {(orderstate !== "cancled" && orderstate !== "successfull") && (
+
+                                            <div key={index} className="card bg-white shadow-xl rounded-lg p-4 transform transition duration-500 hover:scale-105 hover:shadow-2xl">
+                                                <h2 className="text-xl font-bold text-gray-700 mb-2">Name: {order.name}</h2>
+                                                <h2 className="text-base text-gray-600">ID: {order._id}</h2>
+                                                <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
+                                                <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
+                                                <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
+                                                <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
+                                                <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
+                                                <p className="text-gray-600"><strong>Time:</strong> {order.deliveryTime}</p>
+                                                <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
+                                                <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
+
+                                                {order.successfull === "placed" && (
+                                                    <button className="mt-3 mr-2 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700" onClick={() => accapet(order)}>
+                                                        Accept Order
+                                                    </button>
                                                 )}
-                                            </div>}
-                                        {order.successfull === "created" || order.successfull === "placed" && <Button className='text-black' onClick={() => { cancleorder(order) }}>Cancle order</Button>}
-                                        {order.successfull === "assigned" && <p><strong>Delevery By</strong> {order.deleveryboy}</p>}
-                                        {/* Display Items */}
-                                        <div className="mt-4 h-32 overflow-y-auto">
-                                            <h3 className="font-semibold text-lg">Items:</h3>
-                                            <ul className="list-disc pl-5">
-                                                {order.product.map((item, i) => (
-                                                    <li key={i} className="mt-2">
-                                                        <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>}
-                                </>
-                            :
-                            <>
-                                {order.deleveryboy == deleveryboy && <div key={index} className="card bg-white shadow-md rounded-lg p-4">
-                                    <h2 className="text-xl font-semibold mb-2">Name: {order.name}</h2>
-                                    <h2 className="text-xl font-semibold mb-2">ID: {order._id}</h2>
-                                    <p><strong>Full address:</strong> {order.address}</p>
-                                    <p><strong>City:</strong> {order.city}</p>
-                                    <p><strong>Landmark:</strong> {order.landmark}</p>
-                                    <p><strong>Mobile number:</strong> {order.mobile}</p>
-                                    <p><strong>Payment type:</strong> {order.paymentType}</p>
-                                    <p><strong>Price:</strong> {order.price}</p>
-                                    <p><strong>Time:</strong> {order.deliveryTime}</p>
-                                    <p><strong>Date:</strong> {order.date}</p>
-                                    <p><strong>Status:</strong> {order.successfull}</p>
-                                    {order.successfull === "placed" && <Button className='my-2 text-black' onClick={() => { accapet(order) }}>Accapet order</Button>}
-                                    {order.successfull === "accapted" &&
-                                        <div className="flex flex-col items-start p-4 space-y-4">
-                                            <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
-                                            <select
-                                                onChange={(e) => handleSelectChange(e, order)}
-                                                className="w-64 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
-                                            >
-                                                <option value="" disabled>
-                                                    --Select--
-                                                </option>
-                                                {deliveryboys.map((boy) => (
-                                                    <option key={boy.id} value={boy.name}>
-                                                        {boy.username}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                            {/* <Select onOpenChange={(e)=>{changeselectvalue(e)}}>
-                                                <SelectTrigger className="w-[180px]">
-                                                    <SelectValue placeholder="Select a fruit" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Fruits</SelectLabel>
-                                                        {deliveryboys.map((boy) => (
-                                                            <SelectItem key={boy.name} value={boy.name}>Apple</SelectItem>))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select> */}
+                                                {order.successfull === "created" || order.successfull === "placed" && (
+                                                    <button className="mt-3 ml-2 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700" onClick={() => cancleorder(order)}>
+                                                        Cancel Order
+                                                    </button>
+                                                )}
 
-                                            {selectedDeliveryBoy && (
-                                                <p className="mt-2 text-blue-600 font-medium">
-                                                    Selected Delivery Boy: {selectedDeliveryBoy}
-                                                </p>
-                                            )}
-                                        </div>}
-                                    {order.successfull === "created" || order.successfull === "placed" && <Button className='text-black' onClick={() => { cancleorder(order) }}>Cancle order</Button>}
-                                    {order.successfull === "assigned" && <p><strong>Delevery By</strong> {order.deleveryboy}</p>}
-                                    {/* Display Items */}
-                                    <div className="mt-4 h-32 overflow-y-auto">
-                                        <h3 className="font-semibold text-lg">Items:</h3>
-                                        <ul className="list-disc pl-5">
-                                            {order.product.map((item, i) => (
-                                                <li key={i} className="mt-2">
-                                                    <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                </div>}
-                            </>
-                    ))}
-                </section>
+                                                {order.successfull === "accapted" && (
+                                                    <div className="flex flex-col items-start mt-3 space-y-3">
+                                                        <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
+                                                        <select
+                                                            onChange={(e) => changeselectvalue(e.target.value)}
+                                                            className="w-48 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
+                                                        >
+                                                            <option value="" disabled>--Select--</option>
+                                                            {deliveryboys.map((boy) => (
+                                                                <option key={boy.name} value={boy.username}>{boy.username}</option>
+                                                            ))}
+                                                        </select>
+
+                                                        <button className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700" onClick={() => handleSelectChange(selectboy, order)}>
+                                                            Assign Delivery Boy
+                                                        </button>
+
+                                                        {selectedDeliveryBoy && (
+                                                            <p className="mt-2 text-blue-600 font-medium">Selected Delivery Boy: {selectedDeliveryBoy}</p>
+                                                        )}
+                                                    </div>
+                                                )}
+
+
+
+                                                {order.successfull === "assigned" && (
+                                                    <p className="text-gray-600 mt-3"><strong>Delivery By:</strong> {order.deleveryboy}</p>
+                                                )}
+
+                                                {/* Display Items */}
+                                                <div className="mt-3 h-28 overflow-y-auto">
+                                                    <h3 className="font-semibold text-lg text-gray-800">Items:</h3>
+                                                    <ul className="list-disc pl-5 space-y-1">
+                                                        {order.product.map((item, i) => (
+                                                            <li key={i}>
+                                                                <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ₹{item.price}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
+                                );
+                            })}
+                        </section>
+
+                    </div>
+                </div>
             </div>
         </>
+
+
+
     )
 }
 

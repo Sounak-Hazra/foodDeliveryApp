@@ -8,9 +8,10 @@ import Typewriter from 'typewriter-effect';
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast";
-import { Footercomponent } from "./components/Footer";
+import Footer, { Footercomponent } from "./components/Footer";
 import { useRouter } from "next/navigation";
 import Autoplay from "embla-carousel-autoplay"
+import f from "./components/Footer";
 import {
   Carousel,
   CarouselContent,
@@ -406,7 +407,7 @@ export default function Home() {
                   className=" z-10 rounded-[4rem] object-cover"
                 />
               </div>
-              <div className="text-xs z-10 font-bold w-[54px] overflow-x-hidden scrollbar-hide mt-1 h-3 text-center">{cat.name}</div>
+              <div className="text-xs z-10 font-bold w-[54px] overflow-x-hidden scrollbar-hide mt-1 h-[0.76rem] text-center">{cat.name}</div>
               <img className={`${currentcategory === cat.name ? "absolute" : "hidden"} w-[107px] left-[-49px] bottom-[-31px] z-0`} src="/a.svg" alt="" />
               <img className={` ${currentcategory === cat.name ? "absolute" : "hidden"} rotate  w-[107px] left-[53px] bottom-[-31px] z-0`} src="/a.svg" alt="" />
             </div>
@@ -539,7 +540,7 @@ export default function Home() {
         <Link href={"http://wa.link/uk3g4c"} target="blank"><div className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/customersupport.svg" alt="" /></div></Link>
       </div>
 
-      <div className={`h-screen w-[90%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[50px] transition-all duration-1000 ease-in-out p-4`}>
+      <div className={`h-screen w-[90%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[20px] transition-all duration-1000 ease-in-out p-4`}>
         <div onClick={() => { setshowCart(!showCart) }} className="close absolute top-3 right-4">
           <img src="/homepage/cancel-circle-stroke-rounded (1).svg" alt="" />
         </div>
@@ -643,14 +644,14 @@ export default function Home() {
               </span>
             </div>
           </div>
-          <Button onClick={() => { handlepayment() }} className="h-10 w-full focus:bg-yellow-100 bg-yellow-400 text-white my-4 flex justify-center gap-2 items-center rounded-xl py-6 p-2">
+          <button onClick={() => { handlepayment() }} className="h-10 w-full focus:bg-yellow-100 bg-yellow-400 text-white my-4 flex justify-center gap-2 items-center rounded-xl py-6 p-2">
             <span className="text-[18px] bg-transparent text-green-700 font-bold" >Checkout</span>
             <img className="w-5 text-green-700 h-5" src="/homepage/vector2.svg" alt="" />
-          </Button>
+          </button>
         </div>
 
       </div>
-      <Footercomponent />
+      <Footer />
     </>
   );
 }

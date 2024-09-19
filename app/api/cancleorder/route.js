@@ -33,7 +33,7 @@ export async function POST(request) {
               "url": "https://whatsapp-media-library.s3.ap-south-1.amazonaws.com/VIDEO/6353da2e153a147b991dd812/3837837_11096001080p4k1280x720.mp4",
               "filename": "sample_media"
             },        
-            "buttons": [],
+            "buttons": [], 
             "carouselCards": [],
             "location": {},
             "paramsFallbackValue": {

@@ -3,37 +3,46 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { Description } from '@radix-ui/react-toast';
+import { set } from 'mongoose';
 
 const Page = () => {
     const [isLogin, setIsLogin] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [password, setPassword] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState(JSON.parse(localStorage.getItem('deleveryboy')) ? JSON.parse(localStorage.getItem('deleveryboy')).phone : '');
+    const [password, setPassword] = useState(JSON.parse(localStorage.getItem('deleveryboy')) ? JSON.parse(localStorage.getItem('deleveryboy')).password : '');
     const [orders, setOrders] = useState([]);
 
     const { toast } = useToast();
 
-    const handleLogin = async (e) => {
+    const handleLogin = async (p, ps) => {
+        console.log(p, ps)
         try {
-            e.preventDefault();
             const res = await fetch('/api/deleveryboylogin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ phone: phoneNumber, password }),
+                body: JSON.stringify({ phone: p, password: ps }),
             });
             const data = await res.json();
-            console.log(data); // Debugging: Log the response
 
             if (data.success) {
                 const od = data.value
                 setOrders(od)
                 const val = data.success;
-                console.log(val); // Debugging: Log the value of val
                 setIsLogin(val); // Update state to reflect successful login
-                alert(data.message);
+                localStorage.setItem('deleveryboy', JSON.stringify({ phone: p, password: ps }));
+                toast({
+                    title: 'Login successful',
+                    description: data.message,
+                    type: 'success',
+                });
             } else {
-                alert(data.message);
+                // toast({
+                //     title: 'Error',
+                //     message: data.message,
+                //     type: 'error',
+                // });
             }
         } catch (error) {
             console.log(error); // Debugging: Log any errors
@@ -54,14 +63,16 @@ const Page = () => {
             if (data.success) {
                 toast({
                     title: 'Order Cancled',
-                    message: data.message,
+                    description: data.message,
                     type: 'success',
                 });
+                const newOrder = orders.orders.filter((o) => o._id !== order._id);
+                setOrders({ orders: newOrder });
             }
             else {
                 toast({
                     title: 'Error',
-                    message: data.message,
+                    description: data.message,
                     type: 'error',
                 });
             }
@@ -70,8 +81,16 @@ const Page = () => {
             console.log(error); // Debugging: Log any errors
             alert('Something went wrong');
         } finally {
-            handleLogin();
+            // handleLogin(phoneNumber, password);
         }
+    }
+
+    const logout = () => {
+        console.log("Logout");
+        setIsLogin(false);
+        setPhoneNumber('');
+        setPassword('');
+        localStorage.removeItem('deleveryboy');
     }
 
     const orderdelivered = async (order) => {
@@ -85,6 +104,8 @@ const Page = () => {
             });
             const data = await res.json();
             if (data.success) {
+                const newOrder = orders.orders.filter((o) => o._id !== order._id);
+                setOrders({ orders: newOrder });
                 toast({
                     title: 'Order Delivered',
                     message: data.message,
@@ -101,7 +122,11 @@ const Page = () => {
 
         } catch (error) {
             console.log(error); // Debugging: Log any errors
-            alert('Something went wrong');
+            toast({
+                title: 'Error',
+                message: 'Something went wrong',
+                type: 'error',
+            });
         }
     }
 
@@ -109,12 +134,26 @@ const Page = () => {
         console.log("Login state updated:", isLogin);
     }, [isLogin]);
 
+    useEffect(() => {
+        const deleveryboy = JSON.parse(localStorage.getItem('deleveryboy'));
+        if (deleveryboy !== null) {
+            const { phone, password } = deleveryboy;
+            // console.log(deleveryboy);
+            // console.log(phone, password);
+            handleLogin(phone, password);
+            // setPhoneNumber(phone);
+            // setPassword(password);
+            // console.log("Auto login"+phoneNumber);
+        }
+    }, []);
+
+
     if (!isLogin) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
                 <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
                     <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-                    <form onSubmit={handleLogin}>
+                    <form onSubmit={handleLogin(phoneNumber, password)}>
                         <div className="mb-4">
                             <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Phone Number:</label>
                             <input
@@ -152,31 +191,38 @@ const Page = () => {
 
     return (
         <>
-            <div className="min-h-screen bg-gray-100">
+            <div className="min-h-screen bg-gray-50">
                 {/* Navbar */}
-                <nav className="bg-blue-600 p-4 flex justify-between items-center">
-                    <h1 className="text-white text-2xl font-bold"><Link href={"/admin"}>Delivery Tracker</Link></h1>
+                <nav className="bg-green-200/70 p-3 flex justify-between items-center shadow-md">
+                    <h1 className="text-green-800 text-2xl font-bold"><Link href={"/admin"}>Delivery Tracker</Link></h1>
+                    <button className='px-3 py-2 bg-green-700 text-white font-semibold rounded-lg text-sm md:text-base hover:bg-green-800 transition'>
+                        Log out
+                    </button>
                 </nav>
 
                 {/* Card Section */}
-                <section className="p-6 mysectionGrid">
+                <section className="p-4 md:p-6 mysectionGrid gap-6">
                     {orders.orders.map((order, index) => (
-                        <div key={index} className="card bg-white shadow-md rounded-lg p-4">
-                            <h2 className="text-xl font-semibold mb-2">Name: {order.name}</h2>
-                            <h2 className="text-xl font-semibold mb-2">ID: {order._id}</h2>
-                            <p><strong>Full address:</strong> {order.address}</p>
-                            <p><strong>City:</strong> {order.city}</p>
-                            <p><strong>Landmark:</strong> {order.landmark}</p>
-                            <p><strong>Mobile number:</strong> {order.mobile}</p>
-                            <p><strong>Payment type:</strong> {order.paymentType}</p>
-                            <p><strong>Price:</strong> {order.price}</p>
-                            <p><strong>Status:</strong> {order.successfull}</p>
-                            <Button onClick={() => orderdelivered(order)}>Delivered</Button>
-                            <Button onClick={() => orderCancled(order)}>Cancle order</Button>
+                        <div key={index} className="card bg-white shadow-lg rounded-lg p-4">
+                            <h2 className="text-xl font-semibold mb-2 text-gray-800">Name: {order.name}</h2>
+                            <h2 className="text-xl font-semibold mb-2 text-gray-800">ID: {order._id}</h2>
+                            <p className="text-gray-700"><strong>Full address:</strong> {order.address}</p>
+                            <p className="text-gray-700"><strong>City:</strong> {order.city}</p>
+                            <p className="text-gray-700"><strong>Landmark:</strong> {order.landmark}</p>
+                            <p className="text-gray-700"><strong>Mobile number:</strong> {order.mobile}</p>
+                            <p className="text-gray-700"><strong>Time:</strong> {order.deliveryTime}</p>
+                            <p className="text-gray-700"><strong>Payment type:</strong> {order.paymentType}</p>
+                            <p className="text-gray-700"><strong>Price:</strong> ₹{order.price}</p>
+                            <p className="text-gray-700"><strong>Status:</strong> {order.successfull}</p>
+                            <div className="flex justify-between mt-4">
+                                <Button className="bg-green-500 text-white px-3 py-1 rounded-lg text-sm md:text-base hover:bg-green-600 transition" onClick={() => orderdelivered(order)}>Delivered</Button>
+                                <Button className="bg-red-500 text-white px-3 py-1 rounded-lg text-sm md:text-base hover:bg-red-600 transition" onClick={() => orderCancled(order)}>Cancel order</Button>
+                            </div>
+
                             {/* Display Items */}
-                            <div className="mt-4 h-32 overflow-y-auto">
-                                <h3 className="font-semibold text-lg">Items:</h3>
-                                <ul className="list-disc pl-5">
+                            <div className="mt-4 h-32 overflow-y-auto border-t pt-3">
+                                <h3 className="font-semibold text-lg text-gray-800">Items:</h3>
+                                <ul className="list-disc pl-5 text-gray-700">
                                     {order.product.map((item, i) => (
                                         <li key={i} className="mt-2">
                                             <strong>{item.name}</strong> - Quantity: {item.quantity}, Price: ${item.price}

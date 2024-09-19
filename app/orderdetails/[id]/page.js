@@ -278,7 +278,7 @@ const page = ({ params }) => {
               <img src="/addproductfrom/Write icon.svg" alt="" />
             </div>
             <div className='w-full text-[16px]  my-4 overflow-y-hidden flex items-center py-6  font-semibold h-[35px] bg-yellow-300 rounded-2xl whitespace-nowrap overflow-hidden overflow-x-auto scrollbar-hide text-ellipsis'>
-              <div className='mx-4 w-80 whitespace-nowrap  overflow-hidden scrollbar-hide text-ellipsis ' >{order.address ? order.address + "," + order.city + "," + order.landmark : <img onClick={() => { setshowCart(true) }} src="/addproductfrom/Write icon.svg" alt="" />}</div>
+              <div className='mx-4 w-80 whitespace-nowrap  overflow-hidden scrollbar-hide text-ellipsis ' >{order.address ? order.address + "," + order.city + "," + order.landmark : <><button onClick={() => { setshowCart(true) }} className='flex gap-2 items-center h-full '> <span>Click hear to add new address</span> <img  src="/addproductfrom/Write icon.svg" alt="" /></button></>}</div>
             </div>
             <div className='text-[16px] font-semibold flex w-full justify-between'>
               <label htmlFor="deliverytime"> Delivery Time</label>
@@ -348,12 +348,15 @@ const page = ({ params }) => {
             <span>Total :</span>
             <span>{order.product ? order.price : "0"}₹</span>
           </div>
-          <button disabled={emptycart} onClick={() => { placeorder() }} className='w-[165px] h-[38px] p-5 flex items-center justify-center bg-green-300/50 text-green-700 rounded-[52px] text-[23px] font-[500]'>
-            <span>Place Order</span>
-          </button>
+
         </div>
       </div>
-      <div className={`h-screen w-[90%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[50px] transition-all duration-1000 ease-in-out p-4`}>
+      <div className='w-screen h-20 items-center z-20 flex justify-center bg-white fixed bottom-0'>
+        <button disabled={emptycart} onClick={() => { placeorder() }} className='w-[193px] h-[48px] py-[20px] px-[40px] flex items-center justify-center bg-green-700 text-white rounded-[52px] text-[18px] font-[500]'>
+          <span>Place Order</span>
+        </button>
+      </div>
+      <div className={`h-screen w-[90%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[20px] transition-all duration-1000 ease-in-out p-4`}>
         <div onClick={() => { setshowCart(!showCart) }} className="close absolute top-3 right-4">
           <img src="/homepage/cancel-circle-stroke-rounded (1).svg" alt="" />
         </div>
@@ -361,9 +364,9 @@ const page = ({ params }) => {
           <div className='text-center my-6'>
             <h1 className="text-white text-2xl font-bold">Add new address</h1>
           </div>
-          <div className="form p-4 mt-14">
+          <div className="form p-4">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
                   name="name"

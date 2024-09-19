@@ -37,6 +37,7 @@ const page = ({ params }) => {
   const [deliverytime, setdeliverytime] = useState("")
   const router = useRouter()
   const [selectedMethod, setSelectedMethod] = useState('');
+  const [od, setod] = useState('')
 
 
   const handleSelection = (method) => {
@@ -81,6 +82,7 @@ const page = ({ params }) => {
   //     }
   // }
   //address end
+  
 
   const fetchOrder = useCallback(async () => {
     const res = await fetch('/api/getorder', {
@@ -129,8 +131,14 @@ const page = ({ params }) => {
           description: "Order placed successfully. Redirecting...",
           className: "bg-white text-black", // White background for success
           duration: 5000, // Automatically close after a while
-        });
-
+        })
+        // console.log(order)
+        let i = ""
+        order.product.map((product, index) => {
+           i = i + product.name + " " + product.quantity + " items"
+          console.log(i)
+        })
+        console.log(i)
         const payload = {
           "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJhYWFmZWE3ZGU3MGI5ODJhNmYyNCIsIm5hbWUiOiJJbW1pIENvbm5lY3QiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjZkMmFhYWZlYTdkZTcwYjk4MmE2ZjE0IiwiYWN0aXZlUGxhbiI6IkJBU0lDX01PTlRITFkiLCJpYXQiOjE3MjUwODIyODd9.AeaDdvHIU7kaUZchAA9f3_bnPlAdOlE9E3cMgrc5QR8",
           "campaignName": "Order_confirmed",
@@ -138,7 +146,7 @@ const page = ({ params }) => {
           "userName": "Immi Connect",
           "templateParams": [
             `${order.name}`,
-            `${order._id}`,
+            `${i}`,
             `${order.price}₹`,
           ],  // Your custom message
           "source": "new-landing-page form",
@@ -161,6 +169,7 @@ const page = ({ params }) => {
           },
           body: JSON.stringify(payload)
         });
+        console.log(res)
         const payload2 = {
           "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJhYWFmZWE3ZGU3MGI5ODJhNmYyNCIsIm5hbWUiOiJJbW1pIENvbm5lY3QiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjZkMmFhYWZlYTdkZTcwYjk4MmE2ZjE0IiwiYWN0aXZlUGxhbiI6IkJBU0lDX01PTlRITFkiLCJpYXQiOjE3MjUwODIyODd9.AeaDdvHIU7kaUZchAA9f3_bnPlAdOlE9E3cMgrc5QR8",
           "campaignName": "Order_confirmed",
@@ -168,7 +177,7 @@ const page = ({ params }) => {
           "userName": "Immi Connect",
           "templateParams": [
             `${"A order is placed check it !"}`,
-            `${order._id}`,
+            `${i}`,
             `${order.price}₹`,
           ],  // Your custom message
           "source": "new-landing-page form",
@@ -301,7 +310,9 @@ const page = ({ params }) => {
 
   useEffect(() => {
     fetchOrder()
-  }, [fetchOrder,])
+
+
+  }, [fetchOrder, setod])
   return (
     <>
       <div className="header h-36 bg-green-700 text-[28px] text-white  font-[700] flex justify-center items-center">
@@ -389,10 +400,11 @@ const page = ({ params }) => {
         </div>
 
 
-
-        <button onClick={() => place()} className='px-3 w-full my-4 text-center flex items-center justify-center'>
-          <h1 className='text-[20px] px-5 py-2 rounded-[30px] w-fit bg-green-300/50 text-green-600 mt-2 font-[700]'>Place order</h1>
-        </button>
+        <div className='w-screen h-16 flex justify-center bg-white fixed left-0 bottom-0'>
+          <button onClick={() => place()} className='w-[193px] h-[48px] py-[20px] px-[40px] flex items-center justify-center bg-green-700 text-white rounded-[52px] text-[18px] font-[500]'>
+            <span>Place Order</span>
+          </button>
+        </div>
 
       </div>
 

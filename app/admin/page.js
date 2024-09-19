@@ -5,6 +5,12 @@ import React from 'react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import Nav from '../components/Nav'
+import {
+    HoverCard,
+    HoverCardContent,
+    HoverCardTrigger,
+} from "@/components/ui/hover-card"
+
 
 const page = () => {
     const { data: session } = useSession()
@@ -40,16 +46,59 @@ const page = () => {
                     </div>
                 </div>
             </nav>
-
             <div className='p-5 mygridadmin grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4'>
                 <div className='flex h-24 bg-yellow-300 justify-center rounded-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-lg gap-3 items-center'>
                     <Link className='px-2 py-1 bg-yellow-300 text-xl font-bold rounded-md' href='/admin/orderhistory'>Order history</Link>
                 </div>
-                <div className='flex h-24 bg-yellow-300 justify-center text-xl rounded-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-lg gap-3 items-center'>
+                <HoverCard className="p-0">
+                    <HoverCardTrigger asChild className='w-full h-full'>
+                        <div className="flex w-full h-full bg-yellow-300 justify-center text-xl font-semibold text-gray-800 rounded-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl gap-3 items-center cursor-pointer">
+                            <button className="px-4 h-full w-full text-xl font-bold py-2 bg-yellow-300 hover:bg-yellow-500 text-gray-900 rounded-md shadow-sm transition-colors duration-200 ease-in-out" href="/admin/addproduct">
+                                Product
+                            </button>
+                        </div>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-72 p-5 bg-white border border-gray-200 rounded-xl shadow-lg">
+                        <div className="flex flex-col gap-4">
+                            <div className="font-semibold text-lg text-gray-700">Manage Your Products</div>
+                            <Link href="/admin/addproduct" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
+                                ➕ Add a New Product
+                            </Link>
+                            <Link href="/admin/editproduct" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
+                                ✏️ Edit Existing Products
+                            </Link>
+                        </div>
+                    </HoverCardContent>
+
+                </HoverCard>
+
+
+                {/* <div className='flex h-24 bg-yellow-300 justify-center text-xl rounded-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-lg gap-3 items-center'>
                     <Link className='px-2 py-1 bg-yellow-300 font-bold rounded-md' href='/admin/addproduct'>Add new product</Link>
-                </div>
+                </div> */}
+                <HoverCard className="p-0">
+                    <HoverCardTrigger asChild className='w-full h-full'>
+                        <div className="flex w-full h-full bg-yellow-300 justify-center text-xl font-semibold text-gray-800 rounded-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-2xl gap-3 items-center cursor-pointer">
+                            <button className="px-4 h-full w-full text-xl font-bold py-2 bg-yellow-300 hover:bg-yellow-500 text-gray-900 rounded-md shadow-sm transition-colors duration-200 ease-in-out" href="/admin/addproduct">
+                                Category
+                            </button>
+                        </div>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-72 p-5 bg-white border border-gray-200 rounded-xl shadow-lg">
+                        <div className="flex flex-col gap-4">
+                            <div className="font-semibold text-lg text-gray-700">Manage Your Products</div>
+                            <Link href="/admin/addcategory" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
+                                ➕ Add a New Product category
+                            </Link>
+                            <Link href="/admin/category/allcategory" className="text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200">
+                                ✏️ Delete category
+                            </Link>
+                        </div>
+                    </HoverCardContent>
+                </HoverCard>
+
                 <div className='flex h-24 bg-yellow-300 justify-center rounded-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-lg gap-3 items-center'>
-                    <Link className='px-2 py-1 bg-yellow-300 text-xl font-bold rounded-md' href='/admin/addcategory'>Add new category</Link>
+                    <Link className='px-2 py-1 bg-yellow-300 text-xl font-bold rounded-md' href='/admin/addnewpincode'>Add new pincode</Link>
                 </div>
                 <div className='flex h-24 bg-yellow-300 justify-center rounded-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-lg gap-3 items-center'>
                     <Link className='px-2 py-1 bg-yellow-300 text-xl font-bold rounded-md' href='/admin/adddeliveryboy'>Add new Deliveryboy</Link>
@@ -63,8 +112,6 @@ const page = () => {
                     </button>
                 </div>
             </div>
-
-
         </>
     )
 }

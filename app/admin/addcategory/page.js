@@ -104,23 +104,23 @@ export function page() {
 
     return (
         <>
-            <nav className="w-full ">
-                <div className="flex flex-col w-full bg-white">
-                    <div className="text-center bg-green-200/50 rounded-b-3xl">
+            <nav className="w-full bg-white shadow-lg">
+                <div className="flex flex-col items-center">
+                    <div className="bg-green-200/50 rounded-b-3xl w-full flex justify-center py-4">
                         <Link href="https://tiffinboxes.com" className="inline-block">
-                            <img className='w-40' src='/nav/mainnavlogo.png' />
+                            <img className="w-40 md:w-56" src="/nav/mainnavlogo.png" />
                         </Link>
                     </div>
                 </div>
             </nav>
 
-            <div className="mx-auto bg-white rounded-lg p-8 overflow-hidden h-fit my-16 px-5">
-                <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+            <div className="mx-auto bg-white rounded-lg p-6 md:p-10 lg:p-12 shadow-md max-w-lg md:max-w-2xl lg:max-w-3xl h-fit my-16">
+                <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-6">
                     New Category from
                 </h2>
 
                 <Form {...form} className="h-fit">
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                         <FormField
                             control={form.control}
                             name="name"
@@ -129,7 +129,7 @@ export function page() {
                                     <FormLabel className="text-gray-700">Category Name</FormLabel>
                                     <FormControl>
                                         <Input
-                                            className="border-gray-300 focus:border-green-500 focus:ring-green-500 block w-full rounded-md p-2"
+                                            className="border-gray-300 focus:border-green-500 focus:ring-green-500 block w-full rounded-md p-2 text-base"
                                             placeholder="Enter product name"
                                             {...field}
                                         />
@@ -146,6 +146,7 @@ export function page() {
                                     <FormControl>
                                         <Input
                                             type="file"
+                                            className="block w-full text-base"
                                             onChange={(e) => {
                                                 handleImage(e);
                                             }}
@@ -165,6 +166,7 @@ export function page() {
                 </Form>
             </div>
         </>
+
     );
 }
 

@@ -32,7 +32,7 @@ const formSchema = z.object({
     bestsellar: z.boolean().default(false),
 });
 
-export function ProfileForm() {
+export function ProfileForm({params}) {
 
     const [pincode, setpincode] = useState({})
     const [pincodes, setpincodes] = useState([])
@@ -130,9 +130,9 @@ export function ProfileForm() {
         try {
             setissubmitting(true);
 
-            const responce = await fetch("/api/addProduct", {
+            const responce = await fetch("/api/editproduct", {
                 method: "POST",
-                body: JSON.stringify(data),
+                body: JSON.stringify({...data, id: params.id}),
             });
 
             const finalres = await responce.json();
@@ -196,9 +196,47 @@ export function ProfileForm() {
 
     }, [pincodes])
 
+    const getproductDetails = useCallback(async () => {
+        try {
+            const data = await fetch("/api/getproductdetails", {
+                method: "POST",
+                body: JSON.stringify({ id: params.id }),
+            });
+            const response = await data.json();
+            if (!response.success) {
+                toast({
+                    title: "Error",
+                    message: response.message,
+                    type: "error",
+                });
+            } else {
+                const res = response.product
+                console.log(res);
+                form.setValue("productname", res.name);
+                form.setValue("category", res.category);
+                form.setValue("price", `${res.price}`);
+                form.setValue("description", res.description);
+                form.setValue("bestsellar", res.bestsellar);
+                form.setValue("image", res.image);
+                setpincodes(res.avilablepincodes);
+                setAvailablePincodes(res.avilablepincodes);
+            }
+        } catch (error) {
+            toast({
+                title: "Error",
+                message: "Failed to fetch product details",
+                type: "error",
+            });
+        }
+    }, []);
+
+
     useEffect(() => {
         getcategory();
         getPincode()
+        if (params.id) {
+            getproductDetails()
+        }
     }, []);
 
 
