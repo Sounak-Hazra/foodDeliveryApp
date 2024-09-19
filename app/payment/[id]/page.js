@@ -139,37 +139,37 @@ const page = ({ params }) => {
           console.log(i)
         })
         console.log(i)
-        const payload = {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJhYWFmZWE3ZGU3MGI5ODJhNmYyNCIsIm5hbWUiOiJJbW1pIENvbm5lY3QiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjZkMmFhYWZlYTdkZTcwYjk4MmE2ZjE0IiwiYWN0aXZlUGxhbiI6IkJBU0lDX01PTlRITFkiLCJpYXQiOjE3MjUwODIyODd9.AeaDdvHIU7kaUZchAA9f3_bnPlAdOlE9E3cMgrc5QR8",
-          "campaignName": "Order_confirmed",
-          "destination": order.mobile,
-          "userName": "Immi Connect",
-          "templateParams": [
-            `${order.name}`,
-            `${i}`,
-            `${order.price}₹`,
-          ],  // Your custom message
-          "source": "new-landing-page form",
-          "media": {
-            "url": "https://whatsapp-media-library.s3.ap-south-1.amazonaws.com/VIDEO/6353da2e153a147b991dd812/3837837_11096001080p4k1280x720.mp4",
-            "filename": "sample_media"
-          },
-          "buttons": [],
-          "carouselCards": [],
-          "location": {},
-          "paramsFallbackValue": {
-            "FirstName": "user"
-          }
-        };
+        // const payload = {
+        //   "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJhYWFmZWE3ZGU3MGI5ODJhNmYyNCIsIm5hbWUiOiJJbW1pIENvbm5lY3QiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjZkMmFhYWZlYTdkZTcwYjk4MmE2ZjE0IiwiYWN0aXZlUGxhbiI6IkJBU0lDX01PTlRITFkiLCJpYXQiOjE3MjUwODIyODd9.AeaDdvHIU7kaUZchAA9f3_bnPlAdOlE9E3cMgrc5QR8",
+        //   "campaignName": "Order_confirmed",
+        //   "destination": order.mobile,
+        //   "userName": "Immi Connect",
+        //   "templateParams": [
+        //     `${order.name}`,
+        //     `${i}`,
+        //     `${order.price}₹`,
+        //   ],  // Your custom message
+        //   "source": "new-landing-page form",
+        //   "media": {
+        //     "url": "https://whatsapp-media-library.s3.ap-south-1.amazonaws.com/VIDEO/6353da2e153a147b991dd812/3837837_11096001080p4k1280x720.mp4",
+        //     "filename": "sample_media"
+        //   },
+        //   "buttons": [],
+        //   "carouselCards": [],
+        //   "location": {},
+        //   "paramsFallbackValue": {
+        //     "FirstName": "user"
+        //   }
+        // };
 
-        const res = await fetch('https://backend.aisensy.com/campaign/t1/api/v2', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-        console.log(res)
+        // const res = await fetch('https://backend.aisensy.com/campaign/t1/api/v2', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   },
+        //   body: JSON.stringify(payload)
+        // });
+        // console.log(res)
         const payload2 = {
           "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJhYWFmZWE3ZGU3MGI5ODJhNmYyNCIsIm5hbWUiOiJJbW1pIENvbm5lY3QiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjZkMmFhYWZlYTdkZTcwYjk4MmE2ZjE0IiwiYWN0aXZlUGxhbiI6IkJBU0lDX01PTlRITFkiLCJpYXQiOjE3MjUwODIyODd9.AeaDdvHIU7kaUZchAA9f3_bnPlAdOlE9E3cMgrc5QR8",
           "campaignName": "Order_confirmed",
@@ -201,7 +201,7 @@ const page = ({ params }) => {
           body: JSON.stringify(payload2)
         });
 
-        const data = await res.json();
+        // const data = await res.json();
         router.push("/ordersuccess/" + params.id);
 
 
