@@ -8,8 +8,8 @@ import { set } from 'mongoose';
 
 const Page = () => {
     const [isLogin, setIsLogin] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState(JSON.parse(localStorage.getItem('deleveryboy')) ? JSON.parse(localStorage.getItem('deleveryboy')).phone : '');
-    const [password, setPassword] = useState(JSON.parse(localStorage.getItem('deleveryboy')) ? JSON.parse(localStorage.getItem('deleveryboy')).password : '');
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [password, setPassword] = useState("");
     const [orders, setOrders] = useState([]);
 
     const { toast } = useToast();
@@ -133,6 +133,11 @@ const Page = () => {
     useEffect(() => {
         console.log("Login state updated:", isLogin);
     }, [isLogin]);
+
+    useEffect(() => {
+        setPhoneNumber(JSON.parse(localStorage.getItem('deleveryboy')) ? JSON.parse(localStorage.getItem('deleveryboy')).phone : '')
+        setPassword(JSON.parse(localStorage.getItem('deleveryboy')) ? JSON.parse(localStorage.getItem('deleveryboy')).password : '')
+    }, [setPassword, setPhoneNumber]);
 
     useEffect(() => {
         const deleveryboy = JSON.parse(localStorage.getItem('deleveryboy'));
