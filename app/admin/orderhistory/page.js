@@ -39,6 +39,7 @@ const page = () => {
             if (data.success) {
                 const value = data.value
                 setdeliveryboys(value)
+                console.log(value)
             } else {
                 setdeliveryboys([])
             }
