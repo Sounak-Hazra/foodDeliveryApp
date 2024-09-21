@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast"
+import { Infinity, Loader2 } from "lucide-react";
 import {
     Form,
     FormControl,
@@ -55,6 +56,21 @@ export function page() {
 
     const onSubmit = async (data) => {
         console.log(data)
+        const loadingToast = toast({
+            title: (
+                <div className="flex items-center">
+                    <Loader2
+                        size={24}
+                        color="#000000"
+                        className="mr-2 animate-spin"
+                    />
+                    Fetching order history please wait...
+                </div>
+            ),
+            description: 'Fetching order history...',
+            type: 'loading',
+            duration: Infinity
+        });
         try {
             setissubmitting(true);
 

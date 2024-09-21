@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         await dbConnect();
-        const categorys = await Categorys.find();
+        const categorys = await Categorys.find({});
         if (!categorys) {
             return NextResponse.json({ message: "Category not found", success: false }, { status: 400 });
         }
