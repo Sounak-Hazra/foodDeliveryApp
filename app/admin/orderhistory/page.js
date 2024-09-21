@@ -370,8 +370,8 @@ const page = () => {
 
 
                                 <div>
-                                    <h2 className="text-2xl font-bold text-blue-700">Total Orders: {totalordered}</h2>
-                                    <h2 className="text-2xl font-bold text-red-700">Total Cancled: {totalCancle}</h2>
+                                    <h2 className="text-2xl font-bold text-blue-700">Total Orders {"delivered by" + deleveryboy ? deleveryboy : ""} : {totalordered}</h2>
+                                    <h2 className="text-2xl font-bold text-red-700">Total Cancled {"delivered by" + deleveryboy ? deleveryboy : ""}: {totalCancle}</h2>
                                 </div>
                             </section>
                         )}
