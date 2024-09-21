@@ -55,7 +55,8 @@ export function page() {
     }
 
     const onSubmit = async (data) => {
-        console.log(data)
+        console.log(data);
+
         const loadingToast = toast({
             title: (
                 <div className="flex items-center">
@@ -67,45 +68,51 @@ export function page() {
                     Fetching order history please wait...
                 </div>
             ),
-            description: 'Fetching order history...',
+            description: 'Posting category',
             type: 'loading',
-            duration: Infinity
+            duration: null
         });
-        try {
-            setissubmitting(true);
 
-            const responce = await fetch("/api/addcategory", {
+        try {
+            const response = await fetch("/api/addcategory", {
                 method: "POST",
                 body: JSON.stringify(data),
             });
 
-            const finalres = await responce.json();
+            const finalres = await response.json();
             console.log(finalres);
 
             if (finalres.success) {
-                console.log(finalres);
                 toast({
-                    title: "Product added successfully",
-                    description: finalres.message,
+                    id: loadingToast.id,  // Referencing the loading toast to update it
+                    title: 'Order History',
+                    description: 'Category added successfully!',
+                    type: 'success',
+                    duration: 3000
                 });
             } else {
-
                 toast({
-                    title: finalres.message,
-                    description: finalres.message,
+                    id: loadingToast.id,
+                    title: 'Order History',
+                    description: 'Category not added succesfully',
+                    type: 'error',
+                    duration: 3000
                 });
             }
         } catch (error) {
             console.log(error);
             toast({
-                title: "Something went wrong",
-                type: "error",
-                description: "Please try again later",
+                id: loadingToast.id,
+                title: 'Order History',
+                description: 'An error occurred while posting category!',
+                type: 'error',
+                duration: 3000
             });
         } finally {
-            setissubmitting(false);
+            setissubmitting(false); // Ensure this happens in all cases (success or error)
         }
     };
+
 
     const handleImage = async (e) => {
         const file = e.target.files[0]

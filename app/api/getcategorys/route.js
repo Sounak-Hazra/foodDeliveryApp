@@ -6,7 +6,7 @@ export async function GET() {
     try {
         await dbConnect();
         const categorys = await Categorys.find({});
-        if (!categorys) {
+        if (categorys.length === 0) {
             return NextResponse.json({ message: "Category not found", success: false }, { status: 400 });
         }
         return NextResponse.json({ message: "Category found", data: categorys, success: true }, { status: 200 });
