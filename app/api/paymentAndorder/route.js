@@ -12,7 +12,9 @@ export async function POST(request) {
         landmark,
         message,
         mobile,
-        name, } = req;
+        name,
+        pincode } = req;
+    console.log(alternatePhone)
     try {
         await dbConnect();
         const mongoid = new mongoose.Types.ObjectId(_id);
@@ -21,12 +23,13 @@ export async function POST(request) {
             return NextResponse.json({ message: 'Order not found',success:false }, {status:400})
         }
         order.address = address;
-        order.alternatePhone = alternatePhone;
+        order.alternetPhone = alternatePhone;
         order.city = city;
         order.landmark = landmark;
         order.message = message;
         order.mobile = mobile;
         order.name = name;
+        order.pincode = pincode;
 
         console.log(order)
 

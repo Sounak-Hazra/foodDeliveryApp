@@ -204,7 +204,7 @@ const Page = () => {
                 {/* Navbar */}
                 <nav className="bg-green-200/70 p-3 flex justify-between items-center shadow-md">
                     <h1 className="text-green-800 text-2xl font-bold"><Link href={"/admin"}>Delivery Tracker</Link></h1>
-                    <button onClick={()=>logout()} className='px-3 py-2 bg-green-700 text-white font-semibold rounded-lg text-sm md:text-base hover:bg-green-800 transition'>
+                    <button onClick={() => logout()} className='px-3 py-2 bg-green-700 text-white font-semibold rounded-lg text-sm md:text-base hover:bg-green-800 transition'>
                         Log out
                     </button>
                 </nav>
@@ -218,11 +218,14 @@ const Page = () => {
                             <p className="text-gray-700"><strong>Full address:</strong> {order.address}</p>
                             <p className="text-gray-700"><strong>City:</strong> {order.city}</p>
                             <p className="text-gray-700"><strong>Landmark:</strong> {order.landmark}</p>
+                            <p className="text-gray-700"><strong>Pincode:</strong> {order.pincode}</p>
                             <p className="text-gray-700"><strong>Mobile number:</strong> {order.mobile}</p>
                             <p className="text-gray-700"><strong>Time:</strong> {order.deliveryTime}</p>
                             <p className="text-gray-700"><strong>Payment type:</strong> {order.paymentType}</p>
                             <p className="text-gray-700"><strong>Price:</strong> ₹{order.price}</p>
                             <p className="text-gray-700"><strong>Status:</strong> {order.successfull}</p>
+                            <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
+                            <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
                             <div className="flex justify-between mt-4">
                                 <Button className="bg-green-500 text-white px-3 py-1 rounded-lg text-sm md:text-base hover:bg-green-600 transition" onClick={() => orderdelivered(order)}>Delivered</Button>
                                 <Button className="bg-red-500 text-white px-3 py-1 rounded-lg text-sm md:text-base hover:bg-red-600 transition" onClick={() => orderCancled(order)}>Cancel order</Button>

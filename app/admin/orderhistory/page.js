@@ -19,45 +19,48 @@ import { Loader2 } from 'lucide-react'
 
 const page = () => {
     const { toast } = useToast();
-    
+
     const [date, setdate] = useState(() => new Date().toISOString().split('T')[0]);
     const [orders, setorders] = useState([]);
     const [orderstate, setorderstate] = useState("created");
     const [iscancled, setiscancled] = useState(false);
+    const [totalcancled, settotalcancled] = useState([])
     const [deliveryboys, setdeliveryboys] = useState([]);
     const [selectedDeliveryBoy, setSelectedDeliveryBoy] = useState('');
     const [deleveryboy, setdeleveryboy] = useState("all");
     const [totalsale, settotalsale] = useState(0);
     const [selectboy, setselectboy] = useState("");
-    
+    const [totalCancle, settotalCancle] = useState(0)
+    const [totalordered, settotalordered] = useState(0)
+
     const getdeliveryboys = useCallback(async () => {
-    
+
         try {
             const res = await fetch('/api/gtedeliveryboys');
             const data = await res.json();
             setdeliveryboys(data.success ? data.value : []);
         } catch (error) {
             console.log(error);
-        } 
+        }
     }, [date]);
-    
+
     const fetchHistory = useCallback(async () => {
         const loadingToast = toast({
             title: (
                 <div className="flex items-center">
-                  <Loader2
-                    size={24}
-                    color="#000000"
-                    className="mr-2 animate-spin"
-                  />
-                  Fetching order history please wait...
+                    <Loader2
+                        size={24}
+                        color="#000000"
+                        className="mr-2 animate-spin"
+                    />
+                    Fetching order history please wait...
                 </div>
-              ),
+            ),
             description: 'Fetching order history...',
             type: 'loading',
             duration: Infinity
         });
-    
+
         try {
             const res = await fetch('/api/orderhistory', {
                 method: 'POST',
@@ -66,6 +69,7 @@ const page = () => {
             });
             const data = await res.json();
             setorders(data.success ? data.orders : []);
+            console.log(data.orders);
         } catch (error) {
             console.log(error);
         } finally {
@@ -78,24 +82,39 @@ const page = () => {
             });
         }
     }, [date, orderstate]);
-    
+    const fetchtotalcancled = useCallback(async () => {
+        try {
+            const res = await fetch('/api/orderhistory', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date: date, successfull: "cancled", cancled: iscancled })
+            });
+            console.log("this is cancled orders");
+            const data = await res.json();
+            settotalcancled(data.success ? data.orders : []);
+            console.log(data.orders);
+        } catch (error) {
+            console.log(error);
+        } 
+    }, [date, orderstate]);
+
     const cancleorder = async (order) => {
         const loadingToast = toast({
             title: (
                 <div className="flex items-center">
-                  <Loader2
-                    size={24}
-                    color="#000000"
-                    className="mr-2 animate-spin"
-                  />
-                  Cancling Order Please wait...
+                    <Loader2
+                        size={24}
+                        color="#000000"
+                        className="mr-2 animate-spin"
+                    />
+                    Cancling Order Please wait...
                 </div>
-              ),
+            ),
             description: 'Processing...',
             type: 'loading',
             duration: Infinity
         });
-    
+
         try {
             const res = await fetch('/api/cancleorder', {
                 method: 'POST',
@@ -120,24 +139,24 @@ const page = () => {
             });
         }
     };
-    
+
     const handleSelectChange = async (event, order) => {
         const loadingToast = toast({
             title: (
                 <div className="flex items-center">
-                  <Loader2
-                    size={24}
-                    color="#000000"
-                    className="mr-2 animate-spin"
-                  />
-                  Assigning deleveryboy
+                    <Loader2
+                        size={24}
+                        color="#000000"
+                        className="mr-2 animate-spin"
+                    />
+                    Assigning deleveryboy
                 </div>
-              ),
+            ),
             description: 'Processing...',
             type: 'loading',
             duration: Infinity
         });
-    
+
         try {
             const res = await fetch('/api/asingorder', {
                 method: 'POST',
@@ -165,24 +184,24 @@ const page = () => {
             fetchHistory();
         }
     };
-    
+
     const accapet = async (order) => {
         const loadingToast = toast({
             title: (
                 <div className="flex items-center">
-                  <Loader2
-                    size={24}
-                    color="#000000"
-                    className="mr-2 animate-spin"
-                  />
-                  Accepting order please wait...
+                    <Loader2
+                        size={24}
+                        color="#000000"
+                        className="mr-2 animate-spin"
+                    />
+                    Accepting order please wait...
                 </div>
-              ),
+            ),
             description: 'Processing...',
             type: 'loading',
             duration: Infinity
         });
-    
+
         try {
             const res = await fetch('/api/accapetorder', {
                 method: 'POST',
@@ -208,25 +227,58 @@ const page = () => {
             fetchHistory();
         }
     };
+
+    const calculatetotalsuccessfullorder = () => {
+        let total = 0;
+        let tcancled = 0;
+        orders.map((order) => {
+            if (orderstate === "successfull" && deleveryboy !== "all" && deleveryboy === order.deleveryboy) {
+                total++;
+            }
+            else if (orderstate === "successfull" && deleveryboy === "all" ) {
+                total++
+            }
+            
+        })
+        settotalordered(total);
+        console.log(totalcancled)
+        totalcancled.map((order) => {
+            if (deleveryboy !== "all" && deleveryboy === order.deleveryboy) {
+                tcancled++;
+            }
+            else if (deleveryboy === "all") {
+                tcancled++
+            }
+        })
+        settotalCancle(tcancled);
+        console.log(tcancled);
+        console.log(total);
+
+    }
+
+    useEffect(() => {
+        calculatetotalsuccessfullorder()
+        console.log(deleveryboy)
+    }, [settotalcancled,settotalCancle, totalcancled, totalordered, orders, orderstate, deleveryboy])
     
+
     // useEffect hooks as it is
     useEffect(() => {
-        console.log('fetching history');
-        console.log(selectboy);
         fetchHistory();
         getdeliveryboys();
+        fetchtotalcancled()
     }, [date, fetchHistory, setorders, orderstate, selectboy]);
-    
+
     const datechange = (newDate) => {
         const d = newDate;
         setdate(d);
     };
-    
+
     const seteOrderstate = (e) => {
         const d = e.target.value;
         setorderstate(d);
     };
-    
+
     const calculateTotalSale = () => {
         let saleTotal = 0;
         if (deleveryboy === "all") {
@@ -240,19 +292,19 @@ const page = () => {
                 }
             });
         }
-    
+
         settotalsale(saleTotal);
     };
-    
+
     useEffect(() => {
         calculateTotalSale();
+        calculatetotalsuccessfullorder()
     }, [orderstate, deleveryboy, orders]);
-    
+
     const changeselectvalue = (e) => {
-        console.log(e);
         setselectboy(e);
     };
-    
+
 
     return (
         <>
@@ -269,6 +321,7 @@ const page = () => {
                                 <input
                                     type="date"
                                     id="delivery-time"
+                                    value={date}
                                     className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     onChange={(e) => datechange(e.target.value)}
                                 />
@@ -278,7 +331,7 @@ const page = () => {
                                 <select
                                     id="selectstate"
                                     className="rounded-md border border-gray-300 px-3 py-2 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                    onChange={(e) => seteOrderstate(e)}
+                                    onChange={(e) => { seteOrderstate(e); setdeleveryboy("all"); setdate(() => new Date().toISOString().split('T')[0])}}
                                 >
                                     <option value="created">Created</option>
                                     <option value="placed">Placed</option>
@@ -314,6 +367,12 @@ const page = () => {
                                         </option>
                                     ))}
                                 </select>
+
+
+                                <div>
+                                    <h2 className="text-2xl font-bold text-blue-700">Total Orders: {totalordered}</h2>
+                                    <h2 className="text-2xl font-bold text-red-700">Total Cancled: {totalCancle}</h2>
+                                </div>
                             </section>
                         )}
 
@@ -352,6 +411,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
                                                 <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
                                                 <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Pincode:</strong> {order.pincode}</p>
                                                 <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
                                                 <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
                                                 <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
@@ -359,6 +419,8 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>Delevery by:</strong> {order.deleveryboy}</p>
+                                                <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
+                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
 
                                                 {/* Display Items */}
                                                 <div className="mt-3 h-28 overflow-y-auto">
@@ -382,6 +444,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
                                                 <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
                                                 <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Pincode:</strong> {order.pincode}</p>
                                                 <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
                                                 <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
                                                 <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
@@ -389,6 +452,8 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>Delevery by:</strong> {order.deleveryboy}</p>
+                                                <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
+                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
                                                 {/* Display Items */}
                                                 <div className="mt-3 h-28 overflow-y-auto">
                                                     <h3 className="font-semibold text-lg text-gray-800">Items:</h3>
@@ -411,6 +476,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
                                                 <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
                                                 <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Pincode:</strong> {order.pincode}</p>
                                                 <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
                                                 <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
                                                 <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
@@ -418,6 +484,8 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>cancled by:</strong> {order.deleveryboy}</p>
+                                                <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
+                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
 
                                                 {/* Display Items */}
                                                 <div className="mt-3 h-28 overflow-y-auto">
@@ -441,6 +509,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
                                                 <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
                                                 <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Pincode:</strong> {order.pincode}</p>
                                                 <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
                                                 <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
                                                 <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
@@ -448,6 +517,8 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>cancled by:</strong> {order.deleveryboy}</p>
+                                                <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
+                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
 
                                                 {/* Display Items */}
                                                 <div className="mt-3 h-28 overflow-y-auto">
@@ -471,12 +542,15 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Full Address:</strong> {order.address}</p>
                                                 <p className="text-gray-600"><strong>City:</strong> {order.city}</p>
                                                 <p className="text-gray-600"><strong>Landmark:</strong> {order.landmark}</p>
+                                                <p className="text-gray-600"><strong>Pincode:</strong> {order.pincode}</p>
                                                 <p className="text-gray-600"><strong>Mobile:</strong> {order.mobile}</p>
                                                 <p className="text-gray-600"><strong>Payment Type:</strong> {order.paymentType}</p>
                                                 <p className="text-gray-600"><strong>Price:</strong> ₹{order.price}</p>
                                                 <p className="text-gray-600"><strong>Time:</strong> {order.deliveryTime}</p>
                                                 <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
+                                                <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
+                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
 
                                                 {order.successfull === "placed" && (
                                                     <button className="mt-3 mr-2 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700" onClick={() => accapet(order)}>

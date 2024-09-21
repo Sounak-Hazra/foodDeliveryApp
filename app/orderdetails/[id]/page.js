@@ -48,7 +48,7 @@ const formSchema = z.object({
 const page = ({ params }) => {
   const [order, setorder] = useState({ product: [] })
   const [showCart, setshowCart] = useState(false)
-  const [time, setTime] = useState(() => new Date().toLocaleTimeString([], { hour12: false }));
+  const [time, setTime] = useState("");
   const router = useRouter()
   const [emptycart, setemptycart] = useState(false)
 
@@ -174,6 +174,14 @@ const page = ({ params }) => {
         toast({
           title: "Error",
           description: "Please add address",
+          className: "bg-white text-black", // Custom white background for error
+        });
+        return;
+      }
+      if (!time) {
+        toast({
+          title: "Error",
+          description: "Please add a Delevery Time",
           className: "bg-white text-black", // Custom white background for error
         });
         return;
