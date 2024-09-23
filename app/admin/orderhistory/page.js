@@ -22,7 +22,7 @@ const page = () => {
 
     const [date, setdate] = useState(() => new Date().toISOString().split('T')[0]);
     const [orders, setorders] = useState([]);
-    const [orderstate, setorderstate] = useState("created");
+    const [orderstate, setorderstate] = useState("placed");
     const [iscancled, setiscancled] = useState(false);
     const [totalcancled, settotalcancled] = useState([])
     const [deliveryboys, setdeliveryboys] = useState([]);
@@ -32,6 +32,7 @@ const page = () => {
     const [selectboy, setselectboy] = useState("");
     const [totalCancle, settotalCancle] = useState(0)
     const [totalordered, settotalordered] = useState(0)
+    const [placedordercount, setplacedordercount] = useState(0)
 
     const getdeliveryboys = useCallback(async () => {
 
@@ -141,6 +142,14 @@ const page = () => {
     };
 
     const handleSelectChange = async (event, order) => {
+        if (event === '') {
+            toast({
+                title: "Delivery boy not found",
+                description: "Please select a delivery boy",
+                type: "error",
+            });
+            return;
+        }
         const loadingToast = toast({
             title: (
                 <div className="flex items-center">
@@ -227,6 +236,48 @@ const page = () => {
             fetchHistory();
         }
     };
+    const readyorder = async (order) => {
+        const loadingToast = toast({
+            title: (
+                <div className="flex items-center">
+                    <Loader2
+                        size={24}
+                        color="#000000"
+                        className="mr-2 animate-spin"
+                    />
+                    Accepting order please wait...
+                </div>
+            ),
+            description: 'Processing...',
+            type: 'loading',
+            duration: Infinity
+        });
+
+        try {
+            const res = await fetch('/api/ready', {
+                method: 'POST',
+                body: JSON.stringify({ orderid: order._id })
+            });
+            const data = await res.json();
+            toast({
+                id: loadingToast.id,
+                title: 'Order',
+                description: data.success ? 'Placed successfully!' : 'Placement failed!',
+                type: data.success ? 'success' : 'error',
+                duration: 3000
+            });
+        } catch (error) {
+            toast({
+                id: loadingToast.id,
+                title: 'Order',
+                description: 'Placement failed!',
+                type: 'error',
+                duration: 3000
+            });
+        } finally {
+            fetchHistory();
+        }
+    };
 
     const calculatetotalsuccessfullorder = () => {
         let total = 0;
@@ -254,6 +305,23 @@ const page = () => {
         console.log(tcancled);
         console.log(total);
 
+    }
+
+    const calculateplacedorder = async () => {
+        try {
+            const res = await fetch('/api/orderhistory', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ date: date, successfull: "placed" })
+            });
+            const data = await res.json();
+            let cal = data.success ? data.orders.length : 0
+            setplacedordercount(cal);
+            console.log(data.orders.length);
+        } catch (error) {
+            setplacedordercount(0);
+            console.log(error);
+        }
     }
 
     useEffect(() => {
@@ -301,7 +369,15 @@ const page = () => {
         calculatetotalsuccessfullorder()
     }, [orderstate, deleveryboy, orders]);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchHistory();
+            calculateplacedorder();
+        }, 10000);
+        return () => clearInterval(interval); 
+    }, [orderstate]);
     const changeselectvalue = (e) => {
+        if(!e=="")
         setselectboy(e);
     };
 
@@ -315,6 +391,9 @@ const page = () => {
                         <h1 className="text-white text-3xl font-extrabold hidden md:inline-block tracking-wide">
                             <Link href={"/admin"}>Delivery Tracker</Link>
                         </h1>
+                        <h2 className="text-white text-2xl font-extrabold hidden md:inline-block tracking-wide">
+                            Placed orders : {placedordercount}
+                        </h2>
                         <div className="flex items-center space-x-4">
                             <div className="flex items-center">
                                 {/* <label htmlFor="delivery-time" className="text-white mr-2 text-lg">Select Date:</label> */}
@@ -333,9 +412,10 @@ const page = () => {
                                     className="rounded-md border border-gray-300 px-3 py-2 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                     onChange={(e) => { seteOrderstate(e); setdeleveryboy("all"); setdate(() => new Date().toISOString().split('T')[0])}}
                                 >
-                                    <option value="created">Created</option>
                                     <option value="placed">Placed</option>
+                                    <option value="created">Created</option>
                                     <option value="accapted">Accapted</option>
+                                    <option value="ready">Readyed</option>
                                     <option value="assigned">Assigned</option>
                                     <option value="cancled">Cancled</option>
                                     <option value="successfull">Successfull</option>
@@ -420,7 +500,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>Delevery by:</strong> {order.deleveryboy}</p>
                                                 <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
-                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
+                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-16 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
 
                                                 {/* Display Items */}
                                                 <div className="mt-3 h-28 overflow-y-auto">
@@ -562,15 +642,20 @@ const page = () => {
                                                         Cancel Order
                                                     </button>
                                                 )}
-
                                                 {order.successfull === "accapted" && (
+                                                    <button className="mt-3 ml-2 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700" onClick={() => readyorder(order)}>
+                                                        Order Ready
+                                                    </button>
+                                                )}
+
+                                                {order.successfull === "ready" && (
                                                     <div className="flex flex-col items-start mt-3 space-y-3">
                                                         <label className="text-lg font-semibold text-gray-700">Select Delivery Boy:</label>
                                                         <select
                                                             onChange={(e) => changeselectvalue(e.target.value)}
                                                             className="w-48 p-2 border-2 border-blue-500 rounded-md focus:border-blue-700 focus:outline-none bg-gray-50 text-gray-700"
                                                         >
-                                                            <option value="" disabled>--Select--</option>
+                                                            <option value="" >--Select--</option>
                                                             {deliveryboys.map((boy) => (
                                                                 <option key={boy.name} value={boy.username}>{boy.username}</option>
                                                             ))}

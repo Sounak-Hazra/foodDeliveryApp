@@ -51,6 +51,9 @@ const page = ({ params }) => {
   const [time, setTime] = useState("");
   const router = useRouter()
   const [emptycart, setemptycart] = useState(false)
+  const [currenthour, setcurrenthour] = useState(new Date().getHours())
+  const deliverytime = currenthour >= 21 || currenthour <=6 ? ["13:30-14:30","16:30-17:30","19:30-20:30","21:00-22:30"] : currenthour >= 12 && currenthour<15 ? ["13:30-14:30","16:30-17:30","19:30-20:30","21:00-22:30",] : currenthour >=15 && currenthour<18 ? ["16:30-17:30","19:30-20:30","21:00-22:30"] : ["19:30-20:30","21:00-22:30"]
+  console.log(deliverytime)
 
   //address
   const [issubmitting, setissubmitting] = useState(false)
@@ -80,10 +83,8 @@ const page = ({ params }) => {
         body: JSON.stringify(f),
       })
       const finalres = await response.json()
-      console.log(finalres)
       if (finalres.success) {
         const address = localStorage.getItem("address")
-        console.log(data)
         if (!address) {
           localStorage.setItem("address", JSON.stringify(data))
         }
@@ -94,7 +95,6 @@ const page = ({ params }) => {
         })
       }
       if (!finalres.success) {
-        console.log(finalres.message);
         toast({
           title: "Error",
           description: finalres.message,
@@ -113,14 +113,12 @@ const page = ({ params }) => {
   //address end
 
   const fetchOrder = useCallback(async () => {
-    console.log("fetching order")
     const res = await fetch('/api/getorder', {
       method: 'POST',
       body: JSON.stringify({ orderid: params.id })
     })
     const data = await res.json()
     const od = data.order
-    console.log(od)
     setorder(od)
   }, [])
 
@@ -130,10 +128,8 @@ const page = ({ params }) => {
         ? { ...cartItem, quantity: cartItem.quantity + 1 }
         : cartItem
     );
-    console.log(updatedCart)
     const updatedOrder = { ...order, product: updatedCart };
     const price = updatedCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    console.log(price)
     updatedOrder.price = price;
     setorder(updatedOrder);
   }
@@ -148,7 +144,6 @@ const page = ({ params }) => {
       );
       const updatedOrder = { ...order, product: updatedCart };
       const price = updatedCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-      console.log(price)
       updatedOrder.price = price;
       setorder(updatedOrder);
       setorder(updatedOrder);
@@ -157,7 +152,6 @@ const page = ({ params }) => {
       const updatedCart = order.product.filter(cartItem => cartItem._id !== item._id);
       const updatedOrder = { ...order, product: updatedCart };
       const price = updatedCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-      console.log(price)
       updatedOrder.price = price;
       setorder(updatedOrder);
       if (updatedCart.length < 1) {
@@ -227,7 +221,6 @@ const page = ({ params }) => {
 
       // If order fails
       if (!finalres.success) {
-        console.log(finalres.message);
         // Update loader toast to error message
         toast({
           title: "Error",
@@ -261,14 +254,12 @@ const page = ({ params }) => {
 
 
   useEffect(() => {
-    console.log(time)
     fetchOrder()
   }, [fetchOrder, showCart])
 
 
   useEffect(() => {
     const address = JSON.parse(localStorage.getItem("address"))
-    console.log(address)
     if (address) {
       autoAddress(address)
     }
@@ -290,7 +281,7 @@ const page = ({ params }) => {
             </div>
             <div className='text-[16px] font-semibold flex w-full justify-between'>
               <label htmlFor="deliverytime"> Delivery Time</label>
-              <input
+              {/* <input
                 value={time}
                 onChange={(e) => {
                   const timeValue = e.target.value;
@@ -304,7 +295,17 @@ const page = ({ params }) => {
                 id="deliverytime"
                 type="time"
                 step="1"
-              />
+              /> */}
+              <select name="deliverytime" id="deliverytime" value={time} onChange={(e) => { setTime(e.target.value)}}>
+                <option value={""} >--select--</option>
+                {
+                  deliverytime.map((time, index) => {
+                    return (
+                      <option onClick={()=>{setTime(time)}} key={index} value={time}>{time}</option>
+                    )
+                  })
+                }
+              </select>
             </div>
           </div>
         </div>
@@ -364,7 +365,7 @@ const page = ({ params }) => {
           <span>Place Order</span>
         </button>
       </div>
-      <div className={`h-screen w-[90%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[20px] transition-all duration-1000 ease-in-out p-4`}>
+      <div className={`h-screen w-[90%] md:w-[30%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[20px] transition-all duration-1000 ease-in-out p-4`}>
         <div onClick={() => { setshowCart(!showCart) }} className="close absolute top-3 right-4">
           <img src="/homepage/cancel-circle-stroke-rounded (1).svg" alt="" />
         </div>

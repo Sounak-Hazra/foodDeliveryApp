@@ -11,7 +11,6 @@ import { useToast } from "@/hooks/use-toast";
 import Footer, { Footercomponent } from "./components/Footer";
 import { useRouter } from "next/navigation";
 import Autoplay from "embla-carousel-autoplay"
-import f from "./components/Footer";
 import {
   Carousel,
   CarouselContent,
@@ -46,6 +45,7 @@ export default function Home() {
   const [showCart, setshowCart] = useState(false)
   const [currentcategory, setcurrentcategory] = useState("all")
   const [issubmitting, setissubmitting] = useState(false)
+  const [isofftime, setisofftime] = useState(false)
 
   //gpt
   const [showModal, setShowModal] = useState(false);
@@ -55,9 +55,20 @@ export default function Home() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+
+      if ((currentHour === 20 && currentMinute >= 30) || 
+        (currentHour >= 22) ||                          
+        (currentHour < 6)) {          
+        setisofftime(true);
+        alert("Our delivery timing is from 6 AM to 9:30 PM. You can now pre order food for leater time.");
+      }
+
       setShowModal(true);
     }, 4000); // 4-second delay
-    return () => clearTimeout(timer); // Cleanup the timer
+    return () => clearTimeout(timer); 
   }, []);
   const handlePincodeSubmit = async () => {
     const loaderToastId = toast({
@@ -103,14 +114,11 @@ export default function Home() {
         variant: "destructive",
         className: "bg-white text-black",
       });
-    
+
       setError('Service is not available in your location.');
     }
   };
-  
-  //end gpt
 
-  const productRefs = useRef({});
 
   const { toast } = useToast();
   const router = useRouter();
@@ -327,26 +335,26 @@ export default function Home() {
 
         {/* Modal Popup */}
         {showModal && (
-           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-           <div className="bg-white rounded-lg p-8 w-full max-w-md mx-auto">
-             <h2 className="text-xl font-bold mb-4">Enter Your Pincode for checking avilablity in your location</h2>
-             <input
-               type="text"
-               value={pincode}
-               onChange={(e) => setPincode(e.target.value)}
-               placeholder="Enter 6-digit pincode"
-               maxLength="6"
-               className="border border-gray-300 p-2 rounded-md w-full mb-4"
-             />
-             {error && <p className="text-red-500">{error}</p>}
-             <button
-               onClick={handlePincodeSubmit}
-               className="bg-green-600 text-white font-bold p-2 rounded-md w-full"
-             >
-               Submit Pincode
-             </button>
-           </div>
-         </div>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            <div className="bg-white rounded-lg p-8 w-full max-w-md mx-auto">
+              <h2 className="text-xl font-bold mb-4">Enter Your Pincode for checking avilablity in your location</h2>
+              <input
+                type="text"
+                value={pincode}
+                onChange={(e) => setPincode(e.target.value)}
+                placeholder="Enter 6-digit pincode"
+                maxLength="6"
+                className="border border-gray-300 p-2 rounded-md w-full mb-4"
+              />
+              {error && <p className="text-red-500">{error}</p>}
+              <button
+                onClick={handlePincodeSubmit}
+                className="bg-green-600 text-white font-bold p-2 rounded-md w-full"
+              >
+                Submit Pincode
+              </button>
+            </div>
+          </div>
         )}
       </div>
       {/* chat gpt */}
@@ -384,7 +392,7 @@ export default function Home() {
           </CarouselContent>
         </Carousel>
       </div> */}
-      <div className={`bg-green-700 h-[8.50rem] relative top-[-93px] pt-6 pb-6 mt-8 mb-2 rounded-t-[35px] ${showModal && "blureffect" }`}>
+      <div className={`bg-green-700 h-[8.50rem] relative top-[-93px] pt-6 pb-6 mt-8 mb-2 rounded-t-[35px] ${showModal && "blureffect"}`}>
         <div className="flex justify-around overflow-x-auto overflow-y-hidden scrollbar-hide">
           <div onClick={() => { handlechangecat({ name: "all" }) }} className={`flex z-10 flex-col w-[100px] mx-3 p-3  relative  rounded-[3rem] pb-5 ml-4  items-center justify-center ransition-all duration-[2000s] ease-out ${currentcategory === "all" ? "rounded-b-none bg-white " : ""}  `}>
             <div className="bg-yellow-400 w-[60px] h-[74px] flex justify-center items-center rounded-[60px]">
@@ -395,11 +403,11 @@ export default function Home() {
               />
             </div>
             <div className="text-xs z-10 font-bold w-[54px] overflow-x-hidden scrollbar-hide mt-1 h-fit text-center">{"All"}</div>
-            <img className={`${currentcategory === "all" ? "absolute" : "hidden"} w-[107px] left-[-49px] bottom-[-31px] z-0`} src="/a.svg" alt="" />
-            <img className={` ${currentcategory === "all" ? "absolute" : "hidden"} rotate  w-[107px] left-[53px] bottom-[-31px] z-0`} src="/a.svg" alt="" />
+            <img className={`${currentcategory === "all" ? "absolute" : "hidden"} w-[107px] left-[-49px] bottom-[-22px] z-0`} src="/a.svg" alt="" />
+            <img className={` ${currentcategory === "all" ? "absolute" : "hidden"} rotate  w-[107px] left-[53px] bottom-[-25px] z-0`} src="/a.svg" alt="" />
           </div>
           {categorys.map((cat, i) => (
-            <div onClick={() => { handlechangecat(cat) }} key={i} className={`flex z-10 flex-col w-[100px] mx-3 p-3  relative  rounded-[3rem] pb-5  items-center justify-center transition-all duration-[2000s] ease-out ${currentcategory === cat.name ? "rounded-b-none bg-white" : ""}  `}>
+            <div onClick={() => { handlechangecat(cat) }} key={i} className={`flex z-10 flex-col w-[100px] mx-3 p-3   relative  rounded-[3rem] pb-5  items-center justify-center transition-all duration-[2000s] ease-out ${currentcategory === cat.name ? "rounded-b-none bg-white" : ""}  `}>
               <div className="bg-yellow-400 w-[60px] h-[74px] flex justify-center items-center rounded-[60px]">
                 <img
                   src={cat.image}
@@ -407,9 +415,9 @@ export default function Home() {
                   className=" z-10 rounded-[4rem] object-cover"
                 />
               </div>
-              <div className="text-xs z-10 font-bold w-[54px] overflow-x-hidden scrollbar-hide mt-1 h-fit text-center">{cat.name}</div>
-              <img className={`${currentcategory === cat.name ? "absolute" : "hidden"} w-[107px] left-[-49px] bottom-[-31px] z-0`} src="/a.svg" alt="" />
-              <img className={` ${currentcategory === cat.name ? "absolute" : "hidden"} rotate  w-[107px] left-[53px] bottom-[-31px] z-0`} src="/a.svg" alt="" />
+              <div className="text-xs z-10 font-bold w-[54px] h-[18px] scrollbar-hide overflow-x-auto  mt-1  text-center">{cat.name}</div>
+              <img className={`${currentcategory === cat.name ? "absolute" : "hidden"} w-[107px] left-[-49px] bottom-[-22px] z-0`} src="/a.svg" alt="" />
+              <img className={` ${currentcategory === cat.name ? "absolute" : "hidden"} rotate  w-[107px] left-[53px] bottom-[-25px] z-0`} src="/a.svg" alt="" />
             </div>
           ))}
         </div>
@@ -431,7 +439,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className={`mainitems min-h-screen relative top-[-104px] px-9 py-5 ${showModal && "blureffect" }`}>
+      <div className={`mainitems min-h-screen relative top-[-104px] px-9 py-5 ${showModal && "blureffect"}`}>
         {totalProducts.map((product) => (
           <div
             className="h-auto "
@@ -523,7 +531,7 @@ export default function Home() {
       </div>
 
       <div className={`${emptycart ? "fixed bottom-[-100%] " : "fixed bottom-0"} transition-all duration-1000 ease-in-out  h-[115px]   bg-green-200/50 w-screen flex justify-around items-center  bg-green-50 z-10 font-bold text-lg hover:bg-green-100 rounded-t-3xl border border-green-300 `}>
-        <div className="flex  items-center text-3xl w-full font-semibold justify-center gap-[30px] text-green-700">
+        <div className="flex  items-center text-3xl w-full font-semibold justify-center gap-[30px] md:gap-[20%] text-green-700">
           <div className=" text-center font-bold text-[28px] text-black"> ₹{totalprice}</div>
           <div className="w-fit text-center">
             <div className="w-[160px] flex gap-2 bg-green-700 rounded-xl items-center justify-center h-[56px] p-1 px-4 text-white text-lg">
@@ -540,7 +548,7 @@ export default function Home() {
         <Link href={"http://wa.link/uk3g4c"} target="blank"><div className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/customersupport.svg" alt="" /></div></Link>
       </div>
 
-      <div className={`h-screen w-[90%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[20px] transition-all duration-1000 ease-in-out p-4`}>
+      <div className={`h-screen w-[90%] md:w-[30%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[20px] transition-all duration-1000 ease-in-out p-4`}>
         <div onClick={() => { setshowCart(!showCart) }} className="close absolute top-3 right-4">
           <img src="/homepage/cancel-circle-stroke-rounded (1).svg" alt="" />
         </div>
@@ -645,7 +653,7 @@ export default function Home() {
             </div>
           </div>
           <button onClick={() => { handlepayment() }} className="h-10 w-full focus:bg-yellow-100 bg-yellow-400 text-white my-4 flex justify-center gap-2 items-center rounded-xl py-6 p-2">
-            <span className="text-[18px] bg-transparent text-green-700 font-bold" >Checkout</span>
+            <span className="text-[18px] bg-transparent text-green-700 font-bold" >{isofftime ? "Place preorder" : "Checkout"}</span>
             <img className="w-5 text-green-700 h-5" src="/homepage/vector2.svg" alt="" />
           </button>
         </div>
