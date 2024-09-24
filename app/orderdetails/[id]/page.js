@@ -52,8 +52,8 @@ const page = ({ params }) => {
   const router = useRouter()
   const [emptycart, setemptycart] = useState(false)
   const [currenthour, setcurrenthour] = useState(new Date().getHours())
-  const deliverytime = currenthour >= 21 || currenthour <=6 ? ["13:30-14:30","16:30-17:30","19:30-20:30","21:00-22:30"] : currenthour >= 12 && currenthour<15 ? ["13:30-14:30","16:30-17:30","19:30-20:30","21:00-22:30",] : currenthour >=15 && currenthour<18 ? ["16:30-17:30","19:30-20:30","21:00-22:30"] : ["19:30-20:30","21:00-22:30"]
-  console.log(deliverytime)
+  const deliverytime = currenthour >= 21 || currenthour <=6 ? ["01:30-2:30 pm","04:30-05:30 pm","07:30-08:30 pm","09:00-10:30 pm"] : currenthour >= 12 && currenthour<15 ? ["01:30-2:30 pm","04:30-05:30 pm","07:30-08:30 pm","09:00-10:30 pm"] : currenthour >=15 && currenthour<18 ? ["04:30-05:30 pm","07:30-08:30 pm","09:00-10:30 pm"] : ["07:30-08:30 pm","09:00-10:30 pm"]
+  console.log(deliverytime) 
 
   //address
   const [issubmitting, setissubmitting] = useState(false)

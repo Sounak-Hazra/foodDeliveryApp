@@ -439,7 +439,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className={`mainitems min-h-screen relative top-[-104px] px-9 py-5 ${showModal && "blureffect"}`}>
+      <div className={`mainitems min-h-screen relative top-[-104px] px-9 py-5 ${showCart ? "pointer-events-none md:pointer-events-auto" : ""} ${showModal && "blureffect"}`}>
         {totalProducts.map((product) => (
           <div
             className="h-auto "
@@ -530,7 +530,7 @@ export default function Home() {
         ))}
       </div>
 
-      <div className={`${emptycart ? "fixed bottom-[-100%] " : "fixed bottom-0"} transition-all duration-1000 ease-in-out  h-[115px]   bg-green-200/50 w-screen flex justify-around items-center  bg-green-50 z-10 font-bold text-lg hover:bg-green-100 rounded-t-3xl border border-green-300 `}>
+      <div className={`${emptycart ? "fixed bottom-[-100%] " : "fixed bottom-0"} md:w-[50%] md:left-[50%] md:transform md:-translate-x-1/2 transition-all duration-1000 ease-in-out  h-[115px]   bg-green-200/50 w-screen flex justify-around items-center  bg-green-50 z-10 font-bold text-lg hover:bg-green-100 rounded-t-3xl border border-green-300 `}>
         <div className="flex  items-center text-3xl w-full font-semibold justify-center gap-[30px] md:gap-[20%] text-green-700">
           <div className=" text-center font-bold text-[28px] text-black"> ₹{totalprice}</div>
           <div className="w-fit text-center">

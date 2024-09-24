@@ -1,6 +1,6 @@
 "use client"
 import { set } from 'date-fns' // renamed to avoid conflict
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Button } from 'flowbite-react'
 import Sidebar from '@/app/components/Sidebar'
@@ -33,6 +33,11 @@ const page = () => {
     const [totalCancle, settotalCancle] = useState(0)
     const [totalordered, settotalordered] = useState(0)
     const [placedordercount, setplacedordercount] = useState(0)
+    const dateRef = useRef(date)
+
+    useEffect(() => {
+        dateRef.current = date;
+    }, [date]);
 
     const getdeliveryboys = useCallback(async () => {
 
@@ -63,13 +68,15 @@ const page = () => {
         });
 
         try {
+            console.log(date, orderstate, iscancled)
             const res = await fetch('/api/orderhistory', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ date: date, successfull: orderstate, cancled: iscancled })
+                body: JSON.stringify({ date: dateRef.current, successfull: orderstate, cancled: iscancled })
             });
             const data = await res.json();
-            setorders(data.success ? data.orders : []);
+            const arr = data.success ? data.orders : [];
+            setorders(arr);
             console.log(data.orders);
         } catch (error) {
             console.log(error);
@@ -77,9 +84,9 @@ const page = () => {
             toast({
                 id: loadingToast.id,
                 title: 'Order History',
-                description: 'Fetched successfully!',
+                description: 'Order history fetched successfully!',
                 type: 'success',
-                duration: 3000
+                duration: 1
             });
         }
     }, [date, orderstate]);
@@ -90,10 +97,10 @@ const page = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ date: date, successfull: "cancled", cancled: iscancled })
             });
-            console.log("this is cancled orders");
+            // console.log("this is cancled orders");
             const data = await res.json();
             settotalcancled(data.success ? data.orders : []);
-            console.log(data.orders);
+            // console.log(data.orders);
         } catch (error) {
             console.log(error);
         } 
@@ -292,7 +299,6 @@ const page = () => {
             
         })
         settotalordered(total);
-        console.log(totalcancled)
         totalcancled.map((order) => {
             if (deleveryboy !== "all" && deleveryboy === order.deleveryboy) {
                 tcancled++;
@@ -302,8 +308,6 @@ const page = () => {
             }
         })
         settotalCancle(tcancled);
-        console.log(tcancled);
-        console.log(total);
 
     }
 
@@ -317,7 +321,6 @@ const page = () => {
             const data = await res.json();
             let cal = data.success ? data.orders.length : 0
             setplacedordercount(cal);
-            console.log(data.orders.length);
         } catch (error) {
             setplacedordercount(0);
             console.log(error);
@@ -326,7 +329,6 @@ const page = () => {
 
     useEffect(() => {
         calculatetotalsuccessfullorder()
-        console.log(deleveryboy)
     }, [settotalcancled,settotalCancle, totalcancled, totalordered, orders, orderstate, deleveryboy])
     
 
@@ -335,7 +337,7 @@ const page = () => {
         fetchHistory();
         getdeliveryboys();
         fetchtotalcancled()
-    }, [date, fetchHistory, setorders, orderstate, selectboy]);
+    }, [date, setorders, orderstate, selectboy]);
 
     const datechange = (newDate) => {
         const d = newDate;
@@ -369,6 +371,10 @@ const page = () => {
         calculatetotalsuccessfullorder()
     }, [orderstate, deleveryboy, orders]);
 
+    useEffect(() => {
+        console.log("useEffect", date);
+    }, [date])
+    
     useEffect(() => {
         const interval = setInterval(() => {
             fetchHistory();
@@ -410,7 +416,7 @@ const page = () => {
                                 <select
                                     id="selectstate"
                                     className="rounded-md border border-gray-300 px-3 py-2 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                    onChange={(e) => { seteOrderstate(e); setdeleveryboy("all"); setdate(() => new Date().toISOString().split('T')[0])}}
+                                    onChange={(e) => { seteOrderstate(e); setdeleveryboy("all");  setdate(() => new Date().toISOString().split('T')[0])}}
                                 >
                                     <option value="placed">Placed</option>
                                     <option value="created">Created</option>
@@ -447,8 +453,6 @@ const page = () => {
                                         </option>
                                     ))}
                                 </select>
-
-
                                 <div>
                                     <h2 className="text-2xl font-bold text-blue-700">Total Orders {"delivered by" + deleveryboy ? deleveryboy : ""} : {totalordered}</h2>
                                     <h2 className="text-2xl font-bold text-red-700">Total Cancled {"delivered by" + deleveryboy ? deleveryboy : ""}: {totalCancle}</h2>
@@ -500,8 +504,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>Delevery by:</strong> {order.deleveryboy}</p>
                                                 <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
-                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-16 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
-
+                                                <div className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-16 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></div>
                                                 {/* Display Items */}
                                                 <div className="mt-3 h-28 overflow-y-auto">
                                                     <h3 className="font-semibold text-lg text-gray-800">Items:</h3>
@@ -533,7 +536,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>Delevery by:</strong> {order.deleveryboy}</p>
                                                 <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
-                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
+                                                <div className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></div>
                                                 {/* Display Items */}
                                                 <div className="mt-3 h-28 overflow-y-auto">
                                                     <h3 className="font-semibold text-lg text-gray-800">Items:</h3>
@@ -565,7 +568,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>cancled by:</strong> {order.deleveryboy}</p>
                                                 <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
-                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
+                                                <div className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></div>
 
                                                 {/* Display Items */}
                                                 <div className="mt-3 h-28 overflow-y-auto">
@@ -598,7 +601,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>cancled by:</strong> {order.deleveryboy}</p>
                                                 <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
-                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
+                                                <div className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></div>
 
                                                 {/* Display Items */}
                                                 <div className="mt-3 h-28 overflow-y-auto">
@@ -630,7 +633,7 @@ const page = () => {
                                                 <p className="text-gray-600"><strong>Date:</strong> {order.date}</p>
                                                 <p className="text-gray-600"><strong>Status:</strong> {order.successfull}</p>
                                                 <p className="text-gray-600"><strong>Alternet phone number:</strong> {order.alternetPhone ? order.alternetPhone : ""}</p>
-                                                <p className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></p>
+                                                <div className="text-gray-600 "><strong>Message:</strong> <div className='w-full overflow-y-auto h-20 overflow-x-hidden break-words'> {order.message ? order.message : ""}</div></div>
 
                                                 {order.successfull === "placed" && (
                                                     <button className="mt-3 mr-2 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700" onClick={() => accapet(order)}>

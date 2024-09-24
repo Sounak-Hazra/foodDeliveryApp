@@ -6,7 +6,7 @@ export async function POST(request) {
     try {
         await dbConnect();
         const req = await request.json();
-        const { date, successfull, cancled } = req;
+        const { date, successfull } = req;
         console.log(date, successfull);
         const orders = await Orders.find({date,successfull});
 

@@ -3,8 +3,6 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { Description } from '@radix-ui/react-toast';
-import { set } from 'mongoose';
 
 const Page = () => {
     const [isLogin, setIsLogin] = useState(false);
@@ -15,7 +13,7 @@ const Page = () => {
     const { toast } = useToast();
 
     const handleLogin = async (p, ps) => {
-        console.log(p, ps)
+        console.log(p, ps);
         try {
             const res = await fetch('/api/deleveryboylogin', {
                 method: 'POST',
@@ -27,22 +25,22 @@ const Page = () => {
             const data = await res.json();
 
             if (data.success) {
-                const od = data.value
-                setOrders(od)
-                const val = data.success;
-                setIsLogin(val); // Update state to reflect successful login
+                const od = data.value;
+                setOrders(od);
+                setIsLogin(true); // Update state to reflect successful login
                 localStorage.setItem('deleveryboy', JSON.stringify({ phone: p, password: ps }));
+                console.log("Login successful", data.message);
                 toast({
                     title: 'Login successful',
                     description: data.message,
                     type: 'success',
                 });
             } else {
-                // toast({
-                //     title: 'Error',
-                //     message: data.message,
-                //     type: 'error',
-                // });
+                toast({
+                    title: 'Error',
+                    description: data.message, // Fixed "descrip" to "description"
+                    type: 'error',
+                });
             }
         } catch (error) {
             console.log(error); // Debugging: Log any errors
@@ -54,105 +52,23 @@ const Page = () => {
         }
     };
 
-    const orderCancled = async (order) => {
-        try {
-            const res = await fetch('/api/ordercnaclebydeleveryboy', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username: phoneNumber, id: order._id }),
-            });
-            const data = await res.json();
-            if (data.success) {
-                toast({
-                    title: 'Order Cancled',
-                    description: data.message,
-                    type: 'success',
-                });
-                const newOrder = orders.orders.filter((o) => o._id !== order._id);
-                setOrders({ orders: newOrder });
-            }
-            else {
-                toast({
-                    title: 'Error',
-                    description: data.message,
-                    type: 'error',
-                });
-            }
-
-        } catch (error) {
-            console.log(error); // Debugging: Log any errors
-            alert('Something went wrong');
-        } finally {
-            // handleLogin(phoneNumber, password);
-        }
-    }
-
     const logout = () => {
         console.log("Logout");
         setIsLogin(false);
         setPhoneNumber('');
         setPassword('');
         localStorage.removeItem('deleveryboy');
-    }
+    };
 
-    const orderdelivered = async (order) => {
-        try {
-            const res = await fetch('/api/orderdone', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username: phoneNumber, orderid: order._id }),
-            });
-            const data = await res.json();
-            if (data.success) {
-                const newOrder = orders.orders.filter((o) => o._id !== order._id);
-                setOrders({ orders: newOrder });
-                toast({
-                    title: 'Order Delivered',
-                    message: data.message,
-                    type: 'success',
-                });
-            }
-            else {
-                toast({
-                    title: 'Error',
-                    message: data.message,
-                    type: 'error',
-                });
-            }
-
-        } catch (error) {
-            console.log(error); // Debugging: Log any errors
-            toast({
-                title: 'Error',
-                message: 'Something went wrong',
-                type: 'error',
-            });
-        }
-    }
+    const handleSubmit = (e) => {
+        e.preventDefault(); // Prevent default form submission
+        handleLogin(phoneNumber, password);
+    };
 
     useEffect(() => {
-        console.log("Login state updated:", isLogin);
-    }, [isLogin]);
-
-    useEffect(() => {
-        setPhoneNumber(JSON.parse(localStorage.getItem('deleveryboy')) ? JSON.parse(localStorage.getItem('deleveryboy')).phone : '')
-        setPassword(JSON.parse(localStorage.getItem('deleveryboy')) ? JSON.parse(localStorage.getItem('deleveryboy')).password : '')
-    }, [setPassword, setPhoneNumber]);
-
-    useEffect(() => {
-        const deleveryboy = JSON.parse(localStorage.getItem('deleveryboy'));
-        if (deleveryboy !== null) {
-            const { phone, password } = deleveryboy;
-            // console.log(deleveryboy);
-            // console.log(phone, password);
-            handleLogin(phone, password);
-            // setPhoneNumber(phone);
-            // setPassword(password);
-            // console.log("Auto login"+phoneNumber);
+        const savedLogin = JSON.parse(localStorage.getItem('deleveryboy'));
+        if (savedLogin && savedLogin.phone && savedLogin.password) {
+            handleLogin(savedLogin.phone, savedLogin.password);
         }
     }, []);
 
@@ -162,7 +78,7 @@ const Page = () => {
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
                 <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
                     <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-                    <form onSubmit={handleLogin(phoneNumber, password)}>
+                    <div >
                         <div className="mb-4">
                             <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Phone Number:</label>
                             <input
@@ -189,10 +105,10 @@ const Page = () => {
                             />
                         </div>
 
-                        <button type="submit" className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button onClick={() => handleLogin(phoneNumber, password)} className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Login
                         </button>
-                    </form>
+                    </div>
                 </div>
             </div>
         );
