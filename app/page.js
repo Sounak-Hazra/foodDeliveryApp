@@ -59,16 +59,16 @@ export default function Home() {
       const currentHour = now.getHours();
       const currentMinute = now.getMinutes();
 
-      if ((currentHour === 20 && currentMinute >= 30) || 
-        (currentHour >= 22) ||                          
-        (currentHour < 6)) {          
+      if ((currentHour === 20 && currentMinute >= 30) ||
+        (currentHour >= 22) ||
+        (currentHour < 6)) {
         setisofftime(true);
         alert("Our delivery timing is from 6 AM to 9:30 PM. You can now pre order food for leater time.");
       }
 
       setShowModal(true);
     }, 4000); // 4-second delay
-    return () => clearTimeout(timer); 
+    return () => clearTimeout(timer);
   }, []);
   const handlePincodeSubmit = async () => {
     const loaderToastId = toast({
@@ -201,7 +201,6 @@ export default function Home() {
       } else {
         const res = response.data
         setcategorys(res);
-        console.log(res);
       }
     } catch (error) {
       setcategorys([]);
@@ -231,9 +230,7 @@ export default function Home() {
           type: "error",
         });
       } else {
-        console.log(response.products);
         const arr = response.products
-        console.log(arr);
         setTotalProducts(arr);
       }
     } catch (error) {
@@ -306,7 +303,6 @@ export default function Home() {
 
 
   const deleteitemfromcart = (item) => {
-    console.log(item);
 
     const itemIndex = cart.findIndex((cartItem) => cartItem === item);
     if (itemIndex !== -1) {
@@ -323,7 +319,6 @@ export default function Home() {
   const handlechangecat = (cat) => {
     const catname = cat.name
     setcurrentcategory(catname)
-    console.log(cat.name)
   }
 
 
@@ -541,11 +536,21 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className={`stikyfooter ${!emptycart ? "fixed bottom-[-100%] " : "fixed bottom-0"} border border-green-300 transition-all duration-1000 ease-in-out bottom-0 bg-green-200/50 w-screen h-16 rounded-t-3xl flex justify-around items-center  bg-green-50 z-10 font-bold text-lg hover:bg-green-100`}>
-        <div className="p-2 rounded-full shadow-lg bg-green-600 "><img src="/homepage/home.svg" alt="" /></div>
-        <div onClick={() => setshowCart(true)} className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/cart.svg" alt="" /></div>
-        <div className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/offer.svg" alt="" /></div>
-        <Link href={"http://wa.link/uk3g4c"} target="blank"><div className="bg-green-600/50 p-2 rounded-full"><img src="/homepage/customersupport.svg" alt="" /></div></Link>
+      <div className={`stikyfooter ${!emptycart ? "fixed bottom-[-100%] " : "fixed bottom-0"} md:w-[50%] md:left-[50%] md:transform md:-translate-x-1/2 border border-green-300 transition-all duration-1000 ease-in-out bottom-0 bg-green-200/50 w-screen h-16 rounded-t-3xl flex justify-around items-center  bg-green-50 z-10 font-bold text-lg hover:bg-green-100`}>
+        <div className="p-2 rounded-full shadow-lg bg-green-600 ">
+          <img width={25} src="/bar/Home.png" alt="" />
+        </div>
+        <div onClick={() => setshowCart(true)} className="bg-green-600/50 p-2 rounded-full">
+          <img width={25} src="/bar/Cart.png" alt="" />
+        </div>
+        <div className="bg-green-600/50 p-2 rounded-full">
+          <img width={25} src="/bar/Offer.png" alt="" />
+        </div>
+        <Link href={"http://wa.link/uk3g4c"} target="blank">
+          <div className="bg-green-600/50 p-2 rounded-full">
+            <img width={25} src="/bar/Chat.png" alt="" />
+          </div>
+        </Link>
       </div>
 
       <div className={`h-screen w-[90%] md:w-[30%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[20px] transition-all duration-1000 ease-in-out p-4`}>

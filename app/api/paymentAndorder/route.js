@@ -14,7 +14,6 @@ export async function POST(request) {
         mobile,
         name,
         pincode } = req;
-    console.log(alternatePhone)
     try {
         await dbConnect();
         const mongoid = new mongoose.Types.ObjectId(_id);
@@ -31,7 +30,6 @@ export async function POST(request) {
         order.name = name;
         order.pincode = pincode;
 
-        console.log(order)
 
         const savedOrder = await order.save();
         if (!savedOrder) {

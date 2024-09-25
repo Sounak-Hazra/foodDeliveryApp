@@ -27,7 +27,6 @@ const Page = () => {
             } else {
                 const res = response.data;
                 setCategorys(res);
-                console.log(res);
             }
         } catch (error) {
             setCategorys([]);

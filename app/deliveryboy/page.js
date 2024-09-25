@@ -13,7 +13,6 @@ const Page = () => {
     const { toast } = useToast();
 
     const handleLogin = async (p, ps) => {
-        console.log(p, ps);
         try {
             const res = await fetch('/api/deleveryboylogin', {
                 method: 'POST',
@@ -29,7 +28,6 @@ const Page = () => {
                 setOrders(od);
                 setIsLogin(true); // Update state to reflect successful login
                 localStorage.setItem('deleveryboy', JSON.stringify({ phone: p, password: ps }));
-                console.log("Login successful", data.message);
                 toast({
                     title: 'Login successful',
                     description: data.message,
@@ -53,7 +51,6 @@ const Page = () => {
     };
 
     const logout = () => {
-        console.log("Logout");
         setIsLogin(false);
         setPhoneNumber('');
         setPassword('');

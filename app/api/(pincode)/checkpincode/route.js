@@ -8,7 +8,6 @@ export async function POST(req) {
     try {
         const { pincode } = await req.json();
         const avilable = await pincodes.find({ pincode: pincode });
-        console.log(avilable);
         if (avilable.length === 0) {
             return NextResponse.json({ message: "Pincode not avilable", success: false }, { status: 400 });
         }

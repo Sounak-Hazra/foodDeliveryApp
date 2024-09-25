@@ -7,8 +7,6 @@ export async function POST(req) {
     await dbConnect();
     try {
         const { phone, password } = await req.json();
-        console.log(phone);
-        console.log(password)
         const deliveryboy = await deleveryboy.findOne({ phone });
         if (!deliveryboy) {
             return NextResponse.json({ message: "Invalid phone number", success: false }, { status: 400 });

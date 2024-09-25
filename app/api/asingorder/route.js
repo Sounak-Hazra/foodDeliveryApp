@@ -7,7 +7,6 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
     try {
         const { username, orderid } = await req.json();
-        console.log(username);
         const id = new mongoose.Types.ObjectId(orderid);
         const boy = await deleveryboy.findOne({ username });
         if (!boy) {

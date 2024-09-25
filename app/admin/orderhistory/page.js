@@ -68,7 +68,6 @@ const page = () => {
         });
 
         try {
-            console.log(date, orderstate, iscancled)
             const res = await fetch('/api/orderhistory', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -77,7 +76,6 @@ const page = () => {
             const data = await res.json();
             const arr = data.success ? data.orders : [];
             setorders(arr);
-            console.log(data.orders);
         } catch (error) {
             console.log(error);
         } finally {
@@ -103,7 +101,7 @@ const page = () => {
             // console.log(data.orders);
         } catch (error) {
             console.log(error);
-        } 
+        }
     }, [date, orderstate]);
 
     const cancleorder = async (order) => {
@@ -293,10 +291,10 @@ const page = () => {
             if (orderstate === "successfull" && deleveryboy !== "all" && deleveryboy === order.deleveryboy) {
                 total++;
             }
-            else if (orderstate === "successfull" && deleveryboy === "all" ) {
+            else if (orderstate === "successfull" && deleveryboy === "all") {
                 total++
             }
-            
+
         })
         settotalordered(total);
         totalcancled.map((order) => {
@@ -316,7 +314,7 @@ const page = () => {
             const res = await fetch('/api/orderhistory', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ date: date, successfull: "placed" })
+                body: JSON.stringify({ date: new Date().toISOString().split('T')[0], successfull: "placed" })
             });
             const data = await res.json();
             let cal = data.success ? data.orders.length : 0
@@ -329,8 +327,8 @@ const page = () => {
 
     useEffect(() => {
         calculatetotalsuccessfullorder()
-    }, [settotalcancled,settotalCancle, totalcancled, totalordered, orders, orderstate, deleveryboy])
-    
+    }, [settotalcancled, settotalCancle, totalcancled, totalordered, orders, orderstate, deleveryboy])
+
 
     // useEffect hooks as it is
     useEffect(() => {
@@ -371,20 +369,18 @@ const page = () => {
         calculatetotalsuccessfullorder()
     }, [orderstate, deleveryboy, orders]);
 
+
     useEffect(() => {
-        console.log("useEffect", date);
-    }, [date])
-    
-    useEffect(() => {
+        calculateplacedorder()
         const interval = setInterval(() => {
             fetchHistory();
             calculateplacedorder();
         }, 10000);
-        return () => clearInterval(interval); 
-    }, [orderstate]);
+        return () => clearInterval(interval);
+    }, []);
     const changeselectvalue = (e) => {
-        if(!e=="")
-        setselectboy(e);
+        if (!e == "")
+            setselectboy(e);
     };
 
 
@@ -397,9 +393,7 @@ const page = () => {
                         <h1 className="text-white text-3xl font-extrabold hidden md:inline-block tracking-wide">
                             <Link href={"/admin"}>Delivery Tracker</Link>
                         </h1>
-                        <h2 className="text-white text-2xl font-extrabold hidden md:inline-block tracking-wide">
-                            Placed orders : {placedordercount}
-                        </h2>
+
                         <div className="flex items-center space-x-4">
                             <div className="flex items-center">
                                 {/* <label htmlFor="delivery-time" className="text-white mr-2 text-lg">Select Date:</label> */}
@@ -416,7 +410,7 @@ const page = () => {
                                 <select
                                     id="selectstate"
                                     className="rounded-md border border-gray-300 px-3 py-2 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                    onChange={(e) => { seteOrderstate(e); setdeleveryboy("all");  setdate(() => new Date().toISOString().split('T')[0])}}
+                                    onChange={(e) => { seteOrderstate(e); setdeleveryboy("all"); setdate(() => new Date().toISOString().split('T')[0]) }}
                                 >
                                     <option value="placed">Placed</option>
                                     <option value="created">Created</option>
@@ -430,6 +424,11 @@ const page = () => {
                         </div>
                     </div>
                 </nav>
+                <div className='my-3 text-center'>
+                    <h2 className={` text-2xl ${placedordercount==0 ? "text-green-500" : "text-red-500"} font-extrabold hidden md:inline-block tracking-wide`}>
+                        Placed orders : {placedordercount}
+                    </h2>
+                </div>
 
                 {/* Content Section */}
                 <div>

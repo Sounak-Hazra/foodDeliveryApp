@@ -16,12 +16,9 @@ export async function POST(request) {
         }
 
         const boy = await deleveryboy.findOne({ phone: username });
-        console.log(boy);
         if (!boy) {
             return NextResponse.json({ message: "Invalid username", success: false }, { status: 400 });
         }
-        console.log(order)
-        console.log(boy)
         boy.orders.pull(order);
         const saveboy = await boy.save();
         order.successfull = "cancled";

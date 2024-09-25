@@ -42,7 +42,6 @@ const page = ({ params }) => {
 
   const handleSelection = (method) => {
     setSelectedMethod(method);
-    console.log(method);
   };
 
 
@@ -91,7 +90,6 @@ const page = ({ params }) => {
     })
     const data = await res.json()
     const od = data.order
-    console.log(od)
     setorder(od)
   }, [])
 
@@ -136,9 +134,7 @@ const page = ({ params }) => {
         let i = ""
         order.product.map((product, index) => {
            i = i + product.name + " " + product.quantity + " items"
-          console.log(i)
         })
-        console.log(i)
         // const payload = {
         //   "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJhYWFmZWE3ZGU3MGI5ODJhNmYyNCIsIm5hbWUiOiJJbW1pIENvbm5lY3QiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjZkMmFhYWZlYTdkZTcwYjk4MmE2ZjE0IiwiYWN0aXZlUGxhbiI6IkJBU0lDX01PTlRITFkiLCJpYXQiOjE3MjUwODIyODd9.AeaDdvHIU7kaUZchAA9f3_bnPlAdOlE9E3cMgrc5QR8",
         //   "campaignName": "Order_confirmed",
@@ -208,7 +204,6 @@ const page = ({ params }) => {
       }
       // If order fails
       if (!finalres.success) {
-        console.log(finalres.message);
         // Update loader toast to error
         toast({
           title: "Error",

@@ -21,7 +21,6 @@ const AddDeliveryBoy = () => {
                 body: JSON.stringify({ phone, username, password }),
             });
             const data = await res.json();
-            console.log(data);
             if (data.success) {
                 setPhone('');
                 setUsername('');

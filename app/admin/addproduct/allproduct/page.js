@@ -95,9 +95,7 @@ export default function Home() {
                     type: "error",
                 });
             } else {
-                console.log(response.products);
                 const arr = response.products
-                console.log(arr);
                 setTotalProducts(arr);
             }
         } catch (error) {
@@ -119,7 +117,6 @@ export default function Home() {
                 })
             });
             const response = await data.json();
-            console.log(response);
             if (!response.success) {
                 toast({
                     title: "Error",

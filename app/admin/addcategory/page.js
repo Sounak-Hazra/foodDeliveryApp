@@ -55,7 +55,6 @@ export function page() {
     }
 
     const onSubmit = async (data) => {
-        console.log(data);
 
         const loadingToast = toast({
             title: (
@@ -80,7 +79,6 @@ export function page() {
             });
 
             const finalres = await response.json();
-            console.log(finalres);
 
             if (finalres.success) {
                 toast({
@@ -117,7 +115,6 @@ export function page() {
     const handleImage = async (e) => {
         const file = e.target.files[0]
         const data = await makebase64(file)
-        console.log(data)
         form.setValue("image", data)
     };
 

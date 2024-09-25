@@ -7,7 +7,6 @@ import mongoose from "mongoose";
 export async function POST(request) {
     const req = await request.json()
     const { _id, order, deliverytime } = req;
-    console.log(deliverytime)
     try {
         await dbConnect();
         const id = new mongoose.Types.ObjectId(_id);
