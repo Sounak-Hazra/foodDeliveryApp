@@ -323,15 +323,14 @@ const page = ({ params }) => {
                 <div key={product._id}>
                   <div className='w-full flex items-center'>
 
-                    <div className='w-[82px] h-[118px] m-0 p-0'>
-                      <img className='w-full h-full object-cover rounded-[20px]' src={product.image} alt="" />
+                    <div className='w-24 h-24 m-0 p-0'>
+                      <img className="w-24 h-24 shadow-2xl rounded-full object-cover relative" src={product.image} alt="" />
                     </div>
-                    <div className='h-full w-[153px] flex flex-col mx-4 '>
+                    <div className='h-6 overflow-y-auto scrollbar-hide w-[72px] flex flex-col mx-4 '>
                       <span className=' text-[20px] font-[500]'>{product.name}</span>
                     </div>
                     <div className='flex flex-col items-end h-full gap-4'>
                       <div className="price w-[88px] h-[26px] text-end text-[20px] font-[500]">{product.price}₹</div>
-                      <span className='text-[14px] font-[300]'>{product.quantity} items</span>
                       <div className="addtocart flex justify-between items-center py-1 rounded-lg h-10 my-auto  bottom-1 left-[8px]  z-10 font-bold text-lg  transition-colors">
                         <div onClick={() => removefromcart(product)} className="w-6 h-full flex items-center justify-center  cursor-pointer text-green-700 font-bold text-3xl pb-1 rounded-l-lg">
                           <img src="/homepage/Less Icon.svg" alt="" />
