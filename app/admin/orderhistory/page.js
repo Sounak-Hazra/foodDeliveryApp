@@ -34,10 +34,12 @@ const page = () => {
     const [totalordered, settotalordered] = useState(0)
     const [placedordercount, setplacedordercount] = useState(0)
     const dateRef = useRef(date)
+    const stateref = useRef(orderstate)
 
     useEffect(() => {
         dateRef.current = date;
-    }, [date]);
+        stateref.current = orderstate;
+    }, [date, orderstate]);
 
     const getdeliveryboys = useCallback(async () => {
 
@@ -71,7 +73,7 @@ const page = () => {
             const res = await fetch('/api/orderhistory', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ date: dateRef.current, successfull: orderstate, cancled: iscancled })
+                body: JSON.stringify({ date: dateRef.current, successfull: stateref.current, cancled: iscancled })
             });
             const data = await res.json();
             const arr = data.success ? data.orders : [];
