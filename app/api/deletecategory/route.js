@@ -10,7 +10,8 @@ export async function POST(request) {
     const { id } = await request.json();
     try {
         const mongoid = new mongoose.Types.ObjectId(id);
-        const category = await Categorys.findByIdAndDelete({_id : mongoid});
+        const category = await Categorys.findByIdAndDelete({ _id: mongoid });
+        console.log(category);
         if (!category) {
             return NextResponse.json({ message: "Category not found",success:false },{status:404});
         }
