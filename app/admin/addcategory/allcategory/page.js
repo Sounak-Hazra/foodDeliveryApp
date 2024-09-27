@@ -15,7 +15,9 @@ const Page = () => {
 
     const getCategorys = useCallback(async () => {
         try {
-            const data = await fetch("/api/getcategorys");
+            const data = await fetch("/api/getcategorys", {
+                method: "GET",
+            });
             const response = await data.json();
             if (!response.success) {
                 setCategorys([]);
@@ -54,6 +56,7 @@ const Page = () => {
                     message: response.message,
                     type: "error",
                 });
+                getCategorys();
             } else {
                 toast({
                     title: "Success",
