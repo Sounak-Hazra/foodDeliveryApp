@@ -36,7 +36,7 @@ const Page = () => {
                 type: "error",
             });
         }
-    }, []);
+    }, [toast]);
 
     const handledeletecategory = async (id) => {
         try {
@@ -86,6 +86,7 @@ const Page = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
                     {categorys.map((category, index) => (
                         <HoverCard key={index} className="shadow-lg rounded-lg overflow-hidden bg-white hover:shadow-xl transition-shadow duration-300">
+                            {/* HoverCardTrigger only for desktop */}
                             <HoverCardTrigger asChild>
                                 <div className="relative cursor-pointer h-32 w-full">
                                     <img
@@ -101,7 +102,8 @@ const Page = () => {
                                 </div>
                             </HoverCardTrigger>
 
-                            <HoverCardContent className="p-3 flex flex-col items-center justify-between">
+                            {/* Conditionally show HoverCardContent based on screen size */}
+                            <HoverCardContent className="p-3 flex flex-col items-center justify-between hidden sm:flex">
                                 <div className="w-full text-center">
                                     <p className="text-gray-700 font-medium text-base">
                                         {category.name}
@@ -109,11 +111,26 @@ const Page = () => {
                                 </div>
                                 <Button
                                     className="w-full mt-3 bg-red-600 text-white py-1 rounded-md hover:bg-red-700 transition-colors duration-200"
-                                    onClick={() => {handledeletecategory(category._id)}}
+                                    onClick={() => { handledeletecategory(category._id) }}
                                 >
                                     Delete
                                 </Button>
                             </HoverCardContent>
+
+                            {/* Always visible delete button for mobile (no hover) */}
+                            <div className="p-3 flex flex-col items-center justify-between sm:hidden">
+                                <div className="w-full text-center">
+                                    <p className="text-gray-700 font-medium text-base">
+                                        {category.name}
+                                    </p>
+                                </div>
+                                <Button
+                                    className="w-full mt-3 bg-red-600 text-white py-1 rounded-md hover:bg-red-700 transition-colors duration-200"
+                                    onClick={() => { handledeletecategory(category._id) }}
+                                >
+                                    Delete
+                                </Button>
+                            </div>
                         </HoverCard>
                     ))}
                 </div>

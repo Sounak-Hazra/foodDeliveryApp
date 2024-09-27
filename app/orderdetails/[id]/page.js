@@ -326,10 +326,10 @@ const page = ({ params }) => {
                     <div className='w-24 h-24 m-0 p-0'>
                       <img className="w-24 h-24 shadow-2xl rounded-full object-cover relative" src={product.image} alt="" />
                     </div>
-                    <div className='h-6 overflow-y-auto scrollbar-hide w-[72px] flex flex-col mx-4 '>
-                      <span className=' text-[20px] font-[500]'>{product.name}</span>
+                    <div className='h-20 overflow-y-auto scrollbar-hide text-center w-[72px] flex flex-col mx-4 '>
+                      <div className=' my-auto text-[20px] font-[500] '>{product.name}</div>
                     </div>
-                    <div className='flex flex-col items-end h-full gap-4'>
+                    <div className='flex flex-col items-end self-end h-full gap-4'>
                       <div className="price w-[88px] h-[26px] text-end text-[20px] font-[500]">{product.price}₹</div>
                       <div className="addtocart flex justify-between items-center py-1 rounded-lg h-10 my-auto  bottom-1 left-[8px]  z-10 font-bold text-lg  transition-colors">
                         <div onClick={() => removefromcart(product)} className="w-6 h-full flex items-center justify-center  cursor-pointer text-green-700 font-bold text-3xl pb-1 rounded-l-lg">
