@@ -1,25 +1,22 @@
-import e from 'express';
+// Inside dbConfig/connect.js or wherever you handle dbConnect
 import mongoose from 'mongoose';
 
-
-
-export default async function dbConnect() {
-
-    if(mongoose.connections[0].readyState){
-        console.log('Already connected');
+const dbConnect = async () => {
+    if (mongoose.connection.readyState >= 1) {
+        console.log('Database already connected');
         return;
     }
 
     try {
-        const connect = mongoose.connect(process.env.MONGO_URI)
-        const connection = mongoose.connection;
-        connection.on('connected', () => {
-            console.log('Database connected');
+        await mongoose.connect(process.env.MONGO_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
         });
-        connection.on('error', (error) => {
-            console.log(error);
-        });
+        console.log('Database connected successfully');
     } catch (error) {
-        console.log(error);
+        console.error('Error connecting to database:', error);
+        throw new Error('Database connection failed');
     }
-}
+};
+
+export default dbConnect;
