@@ -7,11 +7,10 @@ export async function POST(request) {
     const { name, image } = req;
     try {
         await dbConnect();
-        const newCategory = new Categorys({
+        const newCategory = await Categorys.create({
             name: name,
             image: image,
         });
-        const savedCategory = await newCategory.save();
         if (!savedCategory) {
             return NextResponse.json({ message: "Category not created", success: false }, { status: 400 });
         }
