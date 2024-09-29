@@ -397,7 +397,7 @@ export default function Home() {
                 className=" z-10 rounded-[4rem] "
               />
             </div>
-            <div className="text-xs z-10 font-bold w-[54px] overflow-x-hidden scrollbar-hide mt-1 h-fit text-center">{"All"}</div>
+            <div className={`${currentcategory === "all" ? "text-black" : "text-white"} text-xs z-10 font-bold w-[54px] overflow-x-hidden scrollbar-hide mt-1 h-fit text-center`}>{"All"}</div>
             <img className={`${currentcategory === "all" ? "absolute" : "hidden"} w-[107px] left-[-49px] bottom-[-22px] z-0`} src="/a.svg" alt="" />
             <img className={` ${currentcategory === "all" ? "absolute" : "hidden"} rotate  w-[107px] left-[53px] bottom-[-25px] z-0`} src="/a.svg" alt="" />
           </div>
@@ -410,7 +410,7 @@ export default function Home() {
                   className=" z-10 rounded-[4rem] object-cover"
                 />
               </div>
-              <div className="text-xs z-10 font-bold w-[54px] h-[18px] scrollbar-hide overflow-x-auto  mt-1  text-center">{cat.name}</div>
+              <div className={`${currentcategory === cat.name ? "text-black" : "text-white"} text-xs z-10 font-bold w-[54px] h-[18px] scrollbar-hide overflow-x-auto  mt-1  text-center`}>{cat.name}</div>
               <img className={`${currentcategory === cat.name ? "absolute" : "hidden"} w-[107px] left-[-49px] bottom-[-22px] z-0`} src="/a.svg" alt="" />
               <img className={` ${currentcategory === cat.name ? "absolute" : "hidden"} rotate  w-[107px] left-[53px] bottom-[-25px] z-0`} src="/a.svg" alt="" />
             </div>
