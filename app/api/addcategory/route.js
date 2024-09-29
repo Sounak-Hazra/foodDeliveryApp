@@ -11,7 +11,7 @@ export async function POST(request) {
             name: name,
             image: image,
         });
-        if (!savedCategory) {
+        if (!newCategory) {
             return NextResponse.json({ message: "Category not created", success: false }, { status: 400 });
         }
         return NextResponse.json({ message: "Category created", success: true }, { status: 200 });
