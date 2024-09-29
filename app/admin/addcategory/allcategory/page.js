@@ -16,7 +16,7 @@ const Page = () => {
     const getCategorys = useCallback(async () => {
         try {
             const data = await fetch("/api/getcategorys", {
-                method: "GET",
+                method: "POST",
             });
             const response = await data.json();
             if (!response.success) {

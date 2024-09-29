@@ -2,7 +2,7 @@ import Categorys from "@/models/Categorys";
 import dbConnect from "@/dbConfig/connect";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function POST() {
     try {
         await dbConnect();
         const categorys = await Categorys.find();
