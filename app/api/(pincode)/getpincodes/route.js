@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/dbConfig/connect";
 
 
-export async function GET(req) {
+export async function POST(req) {
     await dbConnect();
     try {
         const allpincodes = await pincodes.find();

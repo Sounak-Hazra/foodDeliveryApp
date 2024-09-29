@@ -60,7 +60,9 @@ export function ProfileForm({params}) {
 
     const getcategory = useCallback(async () => {
         try {
-            const data = await fetch("/api/getcategorys");
+            const data = await fetch("/api/getcategorys", {
+                method: "POST",
+            });
             const response = await data.json();
             if (!response.success) {
                 setcategorys([]);

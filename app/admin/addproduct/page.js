@@ -60,7 +60,9 @@ export function ProfileForm() {
 
     const getcategory = useCallback(async () => {
         try {
-            const data = await fetch("/api/getcategorys");
+            const data = await fetch("/api/getcategorys", {
+                method: "POST",
+            });
             const response = await data.json();
             if (!response.success) {
                 setcategorys([]);
@@ -86,7 +88,9 @@ export function ProfileForm() {
 
     const getPincode = useCallback(async () => {
         try {
-            const data = await fetch("/api/getpincodes");
+            const data = await fetch("/api/getpincodes", {
+                method: "POST",
+            });
             const response = await data.json();
             if (!response.success) {
                 setallpincodes([]);
