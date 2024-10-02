@@ -394,7 +394,7 @@ export default function Home() {
           <div onClick={() => { handlechangecat({ name: "all" }) }} className={`flex z-10 flex-col w-[100px] mx-3 p-3  relative  rounded-[3rem] pb-5 ml-4  items-center justify-center ransition-all duration-[2000s] ease-out ${currentcategory === "all" ? "rounded-b-none bg-white " : ""}  `}>
             <div className="bg-yellow-400 w-[60px] h-[74px] flex justify-center items-center rounded-[60px]">
               <img
-                src="/Meals.svg"
+                src="/homepage/all-01.svg"
                 alt={"cat.name"}
                 className=" z-10 rounded-[4rem] "
               />
