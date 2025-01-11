@@ -460,7 +460,7 @@ export default function Home() {
                         </div>
                         : null}
                       <div className='w-full h-[185px] object-cover'>
-                        <img src={item.image} className="w-full mx-auto rounded-[26px] object-fill h-full" alt="Nachos" />
+                        <img src={item.image} className="w-full mx-auto rounded-[26px] object-cover h-full" alt="Nachos" />
                       </div>
                       <div className='flex justify-between w-full mt-2'>
                         <div className="">
