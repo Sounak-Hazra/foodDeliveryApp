@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { Modal } from "flowbite-react";
 import Link from "next/link";
-import ReadMoreText from "./components/readMore";
+import ReadMoreText from "./components/ReadMore";
 
 
 
