@@ -27,6 +27,7 @@ const Page = () => {
                 const od = data.value;
                 setOrders(od);
                 setIsLogin(true); // Update state to reflect successful login
+                setPhoneNumber(p)
                 localStorage.setItem('deleveryboy', JSON.stringify({ phone: p, password: ps }));
                 toast({
                     title: 'Login successful',
@@ -61,6 +62,19 @@ const Page = () => {
         e.preventDefault(); // Prevent default form submission
         handleLogin(phoneNumber, password);
     };
+
+    const orderdelivered = (e) => {
+        
+    }
+    const orderCancled = async (e) => {
+        const data = await fetch("/api/orderCancleFromDeliveryBoy", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({_id : e._id,phone:phoneNumber}),
+        })
+    }
 
     useEffect(() => {
         const savedLogin = JSON.parse(localStorage.getItem('deleveryboy'));

@@ -147,6 +147,13 @@ export function ProfileForm() {
                     title: "Product added successfully",
                     description: finalres.message,
                 });
+                form.setValue("productname","")
+                form.setValue("category","")
+                form.setValue("price","")
+                form.setValue("description","")
+                form.setValue("image","")
+                form.setValue("bestsellar",false)
+                form.setValue("avilablepincodes",[])
             } else {
 
                 toast({
@@ -254,7 +261,7 @@ export function ProfileForm() {
                                     <FormLabel className="text-lg text-gray-700">Category</FormLabel>
                                     <FormControl>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                            <SelectTrigger className="border-gray-300 focus:border-green-500 focus:ring-green-500 block w-full rounded-md shadow-sm p-3">
+                                            <SelectTrigger className="border-gray-300 focus:border-green-500 focus:ring-green-500 w-full rounded-md shadow-sm p-3">
                                                 <SelectValue placeholder="Select a category" />
                                             </SelectTrigger>
                                             <SelectContent className="z-50">
@@ -334,7 +341,7 @@ export function ProfileForm() {
                                     <FormControl>
                                         <Input
                                             type="file"
-                                            className="w-full block file:mr-4 file:py-2 file:px-4 py-0 file:rounded-md file:border-0 file:text-sm file:bg-green-100 hover:file:bg-green-200"
+                                            className="w-full block cursor-pointer"
                                             onChange={(e) => handleImage(e)} // Not recommended to change JavaScript logic
                                         />
                                     </FormControl>

@@ -1,33 +1,10 @@
 "use client"
 import React from 'react'
 import { Separator } from '@/components/ui/separator'
-
-//for address
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { z } from "zod"
-import Nav from "@/app/components/Nav"
-import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { Loader2 } from 'lucide-react'
 import { useToast } from "@/hooks/use-toast"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarIcon } from "lucide-react"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { format } from "date-fns"
 import { useState, useCallback, useEffect } from "react"
 
 
@@ -166,36 +143,6 @@ const page = ({ params }) => {
         //   body: JSON.stringify(payload)
         // });
         // console.log(res)
-        const payload2 = {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDJhYWFmZWE3ZGU3MGI5ODJhNmYyNCIsIm5hbWUiOiJJbW1pIENvbm5lY3QiLCJhcHBOYW1lIjoiQWlTZW5zeSIsImNsaWVudElkIjoiNjZkMmFhYWZlYTdkZTcwYjk4MmE2ZjE0IiwiYWN0aXZlUGxhbiI6IkJBU0lDX01PTlRITFkiLCJpYXQiOjE3MjUwODIyODd9.AeaDdvHIU7kaUZchAA9f3_bnPlAdOlE9E3cMgrc5QR8",
-          "campaignName": "Order_confirmed",
-          "destination": "+919332667166",
-          "userName": "Immi Connect",
-          "templateParams": [
-            `${"A order is placed check it !"}`,
-            `${i}`,
-            `${order.price}₹`,
-          ],  // Your custom message
-          "source": "new-landing-page form",
-          "media": {
-            "url": "https://whatsapp-media-library.s3.ap-south-1.amazonaws.com/VIDEO/6353da2e153a147b991dd812/3837837_11096001080p4k1280x720.mp4",
-            "filename": "sample_media"
-          },
-          "buttons": [],
-          "carouselCards": [],
-          "location": {},
-          "paramsFallbackValue": {
-            "FirstName": "user"
-          }
-        };
-
-        const resforadmin = await fetch('https://backend.aisensy.com/campaign/t1/api/v2', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload2)
-        });
 
         // const data = await res.json();
         router.push("/ordersuccess/" + params.id);
@@ -310,6 +257,7 @@ const page = ({ params }) => {
   }, [fetchOrder, setod])
   return (
     <>
+      <div className='min-h-screen md:mx-[25vw] relative md:border md:border-x-2 md:border-green-700'>
       <div className="header h-36 bg-green-700 text-[28px] text-white  font-[700] flex justify-center items-center">
         <h1 className='mb-4'>Order Details</h1>
       </div>
@@ -395,11 +343,7 @@ const page = ({ params }) => {
         </div>
 
 
-        <div className='w-screen h-16 flex justify-center bg-white fixed left-0 bottom-0'>
-          <button onClick={() => place()} className='w-[193px] h-[48px] py-[20px] px-[40px] flex items-center justify-center bg-green-700 text-white rounded-[52px] text-[18px] font-[500]'>
-            <span>Place Order</span>
-          </button>
-        </div>
+       
 
       </div>
 
@@ -554,6 +498,12 @@ const page = ({ params }) => {
             </div>
           </>
         </div> */}
+         <div className='w-full h-16 flex justify-center bg-white absolute left-0 bottom-0'>
+          <button onClick={() => place()} className='w-[193px] h-[48px] py-[20px] px-[40px] flex items-center justify-center bg-green-700 text-white rounded-[52px] text-[18px] font-[500]'>
+            <span>Place Order</span>
+          </button>
+        </div>
+        </div>
     </>
   )
 }

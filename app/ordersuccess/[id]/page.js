@@ -52,7 +52,7 @@ function OrderConfirmation({ params }) {
           <p className="text-green-700 text-lg font-semibold">Your order has been placed successfully</p>
           <p className="text-green-700 mt-2 font-semibold">{order ? `Delivery ${order.date}, ${order.deliveryTime}` : ""}</p>
           <p className="text-green-700 mt-2 font-semibold">Your order id : {order ? order._id : ""}</p>
-          <Link href={"http://wa.link/uk3g4c"}>
+          <Link href={"#"}>
             <button className="mt-6 text-red-500 underline hover:text-red-600">
               Track my order
             </button>

@@ -34,7 +34,7 @@ export function page() {
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            category: "",
+            name: "",
             image: "",
         },
     });
@@ -64,7 +64,7 @@ export function page() {
                         color="#000000"
                         className="mr-2 animate-spin"
                     />
-                    Fetching order history please wait...
+                    Adding new catigory please wait...
                 </div>
             ),
             description: 'Posting category',
@@ -83,15 +83,17 @@ export function page() {
             if (finalres.success) {
                 toast({
                     id: loadingToast.id,  // Referencing the loading toast to update it
-                    title: 'Order History',
+                    title: 'Done !',
                     description: 'Category added successfully!',
                     type: 'success',
                     duration: 3000
                 });
+                form.setValue("image", "")
+                form.setValue("name","")
             } else {
                 toast({
                     id: loadingToast.id,
-                    title: 'Order History',
+                    title: 'Error',
                     description: 'Category not added succesfully',
                     type: 'error',
                     duration: 3000
@@ -101,7 +103,7 @@ export function page() {
             console.log(error);
             toast({
                 id: loadingToast.id,
-                title: 'Order History',
+                title: 'Sorry !',
                 description: 'An error occurred while posting category!',
                 type: 'error',
                 duration: 3000
