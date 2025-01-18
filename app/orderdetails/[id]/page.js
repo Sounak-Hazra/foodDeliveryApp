@@ -13,22 +13,12 @@ import { useToast } from "@/hooks/use-toast"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CalendarIcon, Loader2 } from "lucide-react"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { format } from "date-fns"
+import Showloading from '@/app/components/Showloading'
 import { useState, useCallback, useEffect } from "react"
-import local from 'next/font/local'
 
 
 const formSchema = z.object({
@@ -49,14 +39,14 @@ const page = ({ params }) => {
   const [order, setorder] = useState({ product: [] })
   const [showCart, setshowCart] = useState(false)
   const [time, setTime] = useState("");
-  const router = useRouter()
   const [emptycart, setemptycart] = useState(false)
   const [currenthour, setcurrenthour] = useState(new Date().getHours())
   const deliverytime = currenthour >= 21 || currenthour <= 6 ? ["01:30-2:30 pm", "04:30-05:30 pm", "07:30-08:30 pm", "09:00-10:30 pm"] : currenthour >= 12 && currenthour < 15 ? ["01:30-2:30 pm", "04:30-05:30 pm", "07:30-08:30 pm", "09:00-10:30 pm"] : currenthour >= 15 && currenthour < 18 ? ["04:30-05:30 pm", "07:30-08:30 pm", "09:00-10:30 pm"] : ["07:30-08:30 pm", "09:00-10:30 pm"]
-
-
-  //address
   const [issubmitting, setissubmitting] = useState(false)
+
+
+  const router = useRouter()
+  
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -113,13 +103,25 @@ const page = ({ params }) => {
   //address end
 
   const fetchOrder = useCallback(async () => {
-    const res = await fetch('/api/getorder', {
-      method: 'POST',
-      body: JSON.stringify({ orderid: params.id })
-    })
-    const data = await res.json()
-    const od = data.order
-    setorder(od)
+    try {
+      setissubmitting(true)
+      const res = await fetch('/api/getorder', {
+        method: 'POST',
+        body: JSON.stringify({ orderid: params.id })
+      })
+      const data = await res.json()
+      const od = data.order
+      setorder(od)
+    }
+    catch {
+      toast({
+        title:"Something went wrong"
+      })
+    }
+    finally {
+      setissubmitting(false)
+    }
+    
   }, [])
 
   const addtocart = (item) => {
@@ -161,8 +163,8 @@ const page = ({ params }) => {
   };
 
   const placeorder = async () => {
-
     try {
+      setissubmitting(true)
       // Check if address is present
       if (!order.address) {
         toast({
@@ -180,24 +182,6 @@ const page = ({ params }) => {
         });
         return;
       }
-
-      // Show loader toast with Loader2 component
-      const loadingToastId = toast({
-        title: (
-          <div className="flex items-center">
-            <Loader2
-              size={24} // Set size of the loader
-              color="#000000" // Set color of the loader
-              className="mr-2 animate-spin" // Add spinning animation
-            />
-            Placing Order
-          </div>
-        ),
-        description: "Please wait while we process your order...",
-        className: "bg-white text-black", // White background for loader
-        duration: null, // Keep it visible until manually dismissed or updated
-      });
-
       // Call API to place order
       const response = await fetch("/api/placeorder", {
         method: "POST",
@@ -207,21 +191,12 @@ const page = ({ params }) => {
 
       // If order is successful
       if (finalres.success) {
-        // Update loader toast to success
-        toast({
-          title: "Success",
-          description: "Order placed successfully. Redirecting...",
-          className: "bg-white text-black", // White background for success
-          duration: 5000, // Automatically close after a while
-        });
-
         // Navigate to payment page
         router.push("/payment/" + params.id) // Adding a small delay before navigating
       }
 
       // If order fails
       if (!finalres.success) {
-        // Update loader toast to error message
         toast({
           title: "Error",
           description: finalres.message,
@@ -238,6 +213,9 @@ const page = ({ params }) => {
         variant: "destructive", // Assuming "destructive" is the error variant
         className: "bg-white text-black", // White background for error
       });
+    }
+    finally {
+      setissubmitting(false)
     }
   };
 
@@ -266,6 +244,7 @@ const page = ({ params }) => {
   }, [])
   return (
     <>
+      {issubmitting && <Showloading /> }
       <div className='relative md:mx-[25vw] md:min-h-screen md:border md:border-x-2 md:border-green-700 '>
         <div className="header h-36 bg-green-700 text-[28px] text-white  font-[700] flex justify-center items-center">
           <h1 className='mb-4'>Order Details</h1>

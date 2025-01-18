@@ -4,7 +4,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgb(0, 216, 0);
+  background-color: gray;
   border-radius: 10px;
 }
 
@@ -13,7 +13,7 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(1, 150, 1);
+  background-color: rgb(98, 98, 98);
 }
 
 .myimg {

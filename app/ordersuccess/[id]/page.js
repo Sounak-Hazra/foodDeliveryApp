@@ -1,6 +1,5 @@
 "use client"
 import React, { useState, useEffect, useCallback } from 'react';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Link from 'next/link';
 
 function OrderConfirmation({ params }) {

@@ -12,6 +12,7 @@ import { Loader2 } from "lucide-react";
 import { Modal } from "flowbite-react";
 import Link from "next/link";
 import ReadMoreText from "./components/ReadMore";
+import Showloading from "./components/Showloading";
 
 
 
@@ -45,7 +46,7 @@ export default function Home() {
         (currentHour >= 22) ||
         (currentHour < 6)) {
         setisofftime(true);
-        alert("Our delivery timing is from 6 AM to 9:30 PM. You can now pre order food for leater time.");
+        // alert("Our delivery timing is from 6 AM to 9:30 PM. You can now pre order food for leater time.");
       }
 
       setShowModal(true);
@@ -109,23 +110,6 @@ export default function Home() {
   const handlepayment = async () => {
 
     try {
-
-      const loaderToastId = toast({
-        title: (
-          <div className="flex items-center">
-            <Loader2
-              size={24}
-              color="#000000"
-              className="mr-2 animate-spin"
-            />
-            Processing Payment
-          </div>
-        ),
-        description: "Please wait...",
-        className: "bg-white text-black",
-        duration: null,
-      });
-
       setissubmitting(true);
       const data = await fetch("/api/makeorder", {
         method: "POST",
@@ -144,13 +128,6 @@ export default function Home() {
           className: "bg-white text-black",
         });
       } else {
-
-        toast({
-          title: "Order Successful",
-          description: "Redirecting to order details...",
-          variant: "success",
-          className: "bg-white text-black",
-        });
         router.push("/orderdetails/" + response.data);
       }
     } catch (error) {
@@ -165,9 +142,6 @@ export default function Home() {
       setissubmitting(false);
     }
   };
-
-
-
 
   const getcategory = useCallback(async () => {
     try {
@@ -199,6 +173,7 @@ export default function Home() {
 
   const getProduct = useCallback(async () => {
     try {
+      setissubmitting(true)
       const data = await fetch("/api/getProducts", {
         method: "POST",
         body: JSON.stringify({
@@ -224,6 +199,9 @@ export default function Home() {
         message: "Failed to fetch products",
         type: "error",
       });
+    }
+    finally {
+      setissubmitting(false)
     }
   }, [currentcategory]);
 
@@ -308,11 +286,11 @@ export default function Home() {
 
   return (
     <>
+      {issubmitting && <Showloading/>}
       <Nav />
       {/* chat gpt */}
-      <div >
-
-        {/* Modal Popup */}
+      {/*Modal for checking pincode */}
+      {/* <div >
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
             <div className="bg-white rounded-lg p-8 w-full max-w-md mx-auto">
@@ -335,7 +313,7 @@ export default function Home() {
             </div>
           </div>
         )}
-      </div>
+      </div> */}
       {/* chat gpt */}
       {/* <div className="mainitemslogo h-fit p-4 text-3xl mt-4 font-bold text-center">
         <span className="text-green-800">Eat {" "}</span>
@@ -371,7 +349,8 @@ export default function Home() {
           </CarouselContent>
         </Carousel>
       </div> */}
-      <div className={`bg-green-700 h-[8.50rem] relative top-[-93px] pt-6 pb-6 mt-8 mb-2 rounded-t-[35px] ${showModal && "blureffect"}`}>
+      <div className={`bg-green-700 h-[8.50rem] relative top-[-93px] pt-6 pb-6 mt-8 mb-2 rounded-t-[35px] `}>
+      
         <div className="flex justify-around overflow-x-auto overflow-y-hidden scrollbar-hide">
           <div onClick={() => { handlechangecat({ name: "all" }) }} className={`flex z-10 flex-col w-[100px] mx-3 p-3 relative  rounded-[3rem] pb-5 items-center justify-center ransition-all duration-[2000s] ease-out`}>
             <button className="bg-yellow-400 w-[60px] h-[74px] flex justify-center items-center rounded-[60px]">
@@ -418,7 +397,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className={`mainitems min-h-screen relative top-[-104px] px-9 py-5 ${showCart ? "pointer-events-none md:pointer-events-auto" : ""} ${showModal && "blureffect"}`}>
+      <div className={`mainitems min-h-screen relative top-[-104px] px-9 py-5 ${showCart ? "pointer-events-none md:pointer-events-auto" : ""} `}>
         {totalProducts.map((product) => (
           <div
             className="h-auto "
@@ -538,7 +517,7 @@ export default function Home() {
         </Link>
       </div>
 
-      <div className={`h-screen w-[90%] md:w-[30%] fixed border border-green-200 bg-green-700 z-40 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[20px] transition-all duration-1000 ease-in-out`}>
+      <div className={`h-screen w-[90%] md:w-[30%] fixed border border-green-200 bg-green-700 z-20 top-0 ${showCart ? "left-0" : "left-[-100%]"} rounded-r-[20px] transition-all duration-1000 ease-in-out`}>
         <div onClick={() => { setshowCart(!showCart) }} className="close absolute top-3 right-4">
           <img src="/homepage/cancel-circle-stroke-rounded (1).svg" alt="" />
         </div>
