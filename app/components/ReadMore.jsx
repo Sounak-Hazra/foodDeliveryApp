@@ -5,12 +5,9 @@ import { useState } from "react"
 
 
 const ReadMoreText = ({ text }) => {
-    console.log("Called")
     const [show, setshow] = useState(false)
-    console.log(text)
     const toggel = () => {
         setshow(!show)
-        console.log(text)
     }
 
     return (

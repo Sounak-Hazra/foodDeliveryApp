@@ -68,6 +68,7 @@ const page = ({ params }) => {
   const onSubmit = async (data) => {
     const f = { ...data, _id: params.id }
     try {
+      setissubmitting(true)
       const response = await fetch("/api/paymentAndorder", {
         method: "POST",
         body: JSON.stringify(f),
@@ -79,10 +80,6 @@ const page = ({ params }) => {
           localStorage.setItem("address", JSON.stringify(data))
         }
         setshowCart(false)
-        toast({
-          title: "Success",
-          description: "Address added successfully",
-        })
       }
       if (!finalres.success) {
         toast({
@@ -92,18 +89,21 @@ const page = ({ params }) => {
         })
       }
     } catch (error) {
-      console.log(error);
       toast({
         title: "Error",
         description: "Something went wrong",
         variant: "districtive",
       })
     }
+    finally {
+      setissubmitting(false)
+    }
   }
   //address end
 
   const fetchOrder = useCallback(async () => {
     try {
+      console.log("called")
       setissubmitting(true)
       const res = await fetch('/api/getorder', {
         method: 'POST',
@@ -224,16 +224,15 @@ const page = ({ params }) => {
 
   const autoAddress = useCallback(async (add) => {
     await onSubmit(add)
-    await fetchOrder()
   }, [fetchOrder])
 
 
 
 
 
-  useEffect(() => {
-    fetchOrder()
-  }, [fetchOrder, showCart])
+  // useEffect(() => {
+  //   fetchOrder()
+  // }, [fetchOrder, showCart])
 
 
   useEffect(() => {
@@ -241,6 +240,7 @@ const page = ({ params }) => {
     if (address) {
       autoAddress(address)
     }
+    fetchOrder()
   }, [])
   return (
     <>
