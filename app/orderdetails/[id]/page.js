@@ -65,6 +65,35 @@ const page = ({ params }) => {
 
   const { toast } = useToast()
 
+  
+
+  const fetchOrder = async () => {
+    try {
+      setissubmitting(true)
+      const res = await fetch('/api/getorder', {
+        method: 'POST',
+        body: JSON.stringify({ orderid: params.id })
+      })
+      const data = await res.json()
+      const od = data.order
+      setorder(()=>od)
+    }
+    catch {
+      toast({
+        title:"Something went wrong"
+      })
+    }
+    finally {
+      setissubmitting(false)
+    }
+    
+  }
+
+  const autoAddress = async (add) => {
+    console.log("Auto addresscalled")
+    await onSubmit(add)
+  }
+
   const onSubmit = async (data) => {
     const f = { ...data, _id: params.id }
     try {
@@ -75,8 +104,8 @@ const page = ({ params }) => {
       })
       const finalres = await response.json()
       if (finalres.success) {
-        const address = localStorage.getItem("address")
-        if (!address) {
+        const address = JSON.parse(localStorage.getItem("address"))
+        if (address != data) {
           localStorage.setItem("address", JSON.stringify(data))
         }
         setshowCart(false)
@@ -89,6 +118,7 @@ const page = ({ params }) => {
         })
       }
     } catch (error) {
+      console.log(error)
       toast({
         title: "Error",
         description: "Something went wrong",
@@ -97,70 +127,10 @@ const page = ({ params }) => {
     }
     finally {
       setissubmitting(false)
+      fetchOrder()
     }
   }
-  //address end
 
-  const fetchOrder = useCallback(async () => {
-    try {
-      console.log("called")
-      setissubmitting(true)
-      const res = await fetch('/api/getorder', {
-        method: 'POST',
-        body: JSON.stringify({ orderid: params.id })
-      })
-      const data = await res.json()
-      const od = data.order
-      setorder(od)
-    }
-    catch {
-      toast({
-        title:"Something went wrong"
-      })
-    }
-    finally {
-      setissubmitting(false)
-    }
-    
-  }, [])
-
-  const addtocart = (item) => {
-    const updatedCart = order.product.map(cartItem =>
-      cartItem._id === item._id
-        ? { ...cartItem, quantity: cartItem.quantity + 1 }
-        : cartItem
-    );
-    const updatedOrder = { ...order, product: updatedCart };
-    const price = updatedCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    updatedOrder.price = price;
-    setorder(updatedOrder);
-  }
-
-  const removefromcart = (item) => {
-
-    if (item.quantity > 1) {
-      const updatedCart = order.product.map(cartItem =>
-        cartItem._id === item._id
-          ? { ...cartItem, quantity: cartItem.quantity - 1 }
-          : cartItem
-      );
-      const updatedOrder = { ...order, product: updatedCart };
-      const price = updatedCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-      updatedOrder.price = price;
-      setorder(updatedOrder);
-      setorder(updatedOrder);
-    }
-    else {
-      const updatedCart = order.product.filter(cartItem => cartItem._id !== item._id);
-      const updatedOrder = { ...order, product: updatedCart };
-      const price = updatedCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-      updatedOrder.price = price;
-      setorder(updatedOrder);
-      if (updatedCart.length < 1) {
-        setshowCart(true)
-      }
-    }
-  };
 
   const placeorder = async () => {
     try {
@@ -219,29 +189,67 @@ const page = ({ params }) => {
     }
   };
 
-
-
-
-  const autoAddress = useCallback(async (add) => {
-    await onSubmit(add)
-  }, [fetchOrder])
-
-
-
-
-
   // useEffect(() => {
   //   fetchOrder()
   // }, [fetchOrder, showCart])
 
 
+
+  const addtocart = (item) => {
+    const updatedCart = order.product.map(cartItem =>
+      cartItem._id === item._id
+        ? { ...cartItem, quantity: cartItem.quantity + 1 }
+        : cartItem
+    );
+    const updatedOrder = { ...order, product: updatedCart };
+    const price = updatedCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    updatedOrder.price = price;
+    setorder(updatedOrder);
+  }
+
+  const removefromcart = (item) => {
+
+    if (item.quantity > 1) {
+      const updatedCart = order.product.map(cartItem =>
+        cartItem._id === item._id
+          ? { ...cartItem, quantity: cartItem.quantity - 1 }
+          : cartItem
+      );
+      const updatedOrder = { ...order, product: updatedCart };
+      const price = updatedCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+      updatedOrder.price = price;
+      setorder(updatedOrder);
+      setorder(updatedOrder);
+    }
+    else {
+      const updatedCart = order.product.filter(cartItem => cartItem._id !== item._id);
+      const updatedOrder = { ...order, product: updatedCart };
+      const price = updatedCart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+      updatedOrder.price = price;
+      setorder(updatedOrder);
+      if (updatedCart.length < 1) {
+        setshowCart(true)
+      }
+    }
+  };
+
+
+  useEffect(() => {
+    fetchOrder()
+  }, [])
+
   useEffect(() => {
     const address = JSON.parse(localStorage.getItem("address"))
     if (address) {
-      autoAddress(address)
+      onSubmit(address)
     }
-    fetchOrder()
+    else {
+      console.log("Address not found");
+    }
   }, [])
+  
+
+  
   return (
     <>
       {issubmitting && <Showloading /> }

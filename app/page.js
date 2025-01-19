@@ -398,9 +398,9 @@ export default function Home() {
         </div>
       </div> */}
       <div className={`mainitems min-h-screen relative top-[-104px] px-9 py-5 ${showCart ? "pointer-events-none md:pointer-events-auto" : ""} `}>
-        {totalProducts.map((product) => (
+        {totalProducts.map((product,i) => (
           <div
-            className="h-auto "
+            className="h-auto " key={i}
           >
             {currentcategory === "all" ?
               <div className="h-auto text-center text-3xl font-bold my-5">
@@ -411,7 +411,6 @@ export default function Home() {
               </div>}
             <div className="myproductsgrid w-full mt-4">
               {product.products.map((item, i) => (
-                <>
                   <div key={i} className="bg-white w-full  relative self-start  rounded-lg flex items-center space-x-4 max-w-sm mx-auto md:max-w-lg">
 
                     <div className="overflow-hidden flex flex-col m-0 w-full">
@@ -481,8 +480,6 @@ export default function Home() {
 
                   </div> */}
                   </div>
-
-                </>
               ))}
             </div>
           </div>
@@ -543,8 +540,8 @@ export default function Home() {
               </> :
 
               cart.map((item, i) => (
-                <div className="relative">
-                  <div key={i} className="w-[94%] relative text-white rounded-lg flex items-center my-3 mx-[3%] ">
+                <div className="relative" key={i}>
+                  <div className="w-[94%] relative text-white rounded-lg flex items-center my-3 mx-[3%] ">
                     <div className="flex-shrink-0 relative w-[35%]">
                       <div>
                         <img
